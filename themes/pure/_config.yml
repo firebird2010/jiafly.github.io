@@ -4,9 +4,9 @@ menu:
   Archives: archives  # 归档
   Categories: categories  # 分类
   Tags: tags  # 标签
-  Repository: repository  # github repositories
-  Books: books  # 豆瓣书单
-  Links: links  # 友链
+  # Repository: repository  # github repositories
+  # Books: books  # 豆瓣书单
+  # Links: links  # 友链
   About: about  # 关于
 
 # Enable/Disable menu icons
@@ -34,11 +34,11 @@ site:
   title: Hexo # 页面title
   favicon: /favicon.png
   board: <p>欢迎交流与分享经验!</p> # 站点公告
-  copyright: false # 底部版权信息
+  copyright: true # 底部版权信息
 
 # config
 config:
-  skin: # 主题颜色 theme-black theme-blue theme-green theme-purple
+  skin: theme-purple # 主题颜色 theme-black theme-blue theme-green theme-purple
   layout: main-center # 布局方式 main-left main-center main-right
   toc: true # 是否开启文章章节目录导航
   menu_highlight: false # 是否开启当前菜单高亮显示
@@ -84,11 +84,11 @@ donate:
   enable: true
   # 微信打赏
   wechatpay:
-    qrcode: images/donate/wechatpayimg.png
+    qrcode: http://pic.jiafly.com/admin/wechatpay.jpg
     title: 微信支付
   # 支付宝打赏
   alipay: 
-    qrcode: images/donate/alipayimg.png 
+    qrcode: http://pic.jiafly.com/admin/alipay.jpg
     title: 支付宝
 
 # Share
@@ -176,13 +176,13 @@ fb_app_id:
 # profile
 profile:
   enabled: true # Whether to show profile bar
-  avatar: images/avatar.jpg
+  avatar: images/headImage.jpg
   gravatar: # Gravatar email address, if you enable Gravatar, your avatar config will be overriden
-  author: 昵称
-  author_title: Web Developer & Designer
+  author: 东邪Jiafly
+  author_title: 后端开发 & 运维
   author_description: 个人简介。
-  location: Shenzhen, China
-  follow: https://github.com/cofess
+  location: Beijing, China
+  follow: # https://github.com/cofess
   # Social Links
   social:
     links:
