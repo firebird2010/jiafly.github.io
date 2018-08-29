@@ -186,30 +186,30 @@ profile:
   # Social Links
   social:
     links:
-      github: https://github.com/cofess
-      weibo: http://weibo.com/cofess
-      twitter: https://twitter.com/iwebued
+      github: https://github.com/jiafly
+      weibo: https://weibo.com/u/6655694631
+      # twitter: https://twitter.com/iwebued
       # facebook: /
       # dribbble: /
-      behance: https://www.behance.net/cofess
+      # behance: https://www.behance.net/cofess
       rss: atom.xml
     link_tooltip: true # enable the social link tooltip, options: true, false
   # My Skills 
   skills:
-    Git: ★★★☆☆
-    Gulp: ★★★☆☆
-    Javascript: ★★★☆☆
-    HTML+CSS: ★★★☆☆
-    Bootstrap: ★★★☆☆
-    ThinkPHP: ★★★☆☆
-    平面设计: ★★★☆☆
+    # Git: ★★★☆☆
+    # Gulp: ★★★☆☆
+    # Javascript: ★★★☆☆
+    # HTML+CSS: ★★★☆☆
+    # Bootstrap: ★★★☆☆
+    # ThinkPHP: ★★★☆☆
+    # 平面设计: ★★★☆☆
   # My Personal Links
   links:
     Github: https://github.com/cofess
-    Blog: http://blog.cofess.com
-    微博: http://weibo.com/cofess
-    花瓣: http://huaban.com/cofess
-    Behance: https://www.behance.net/cofess
+    Blog: http://blog.jiafly.com
+    微博: https://weibo.com/u/6655694631
+    # 花瓣: http://huaban.com/cofess
+    # Behance: https://www.behance.net/cofess
   # My Personal Labels
   labels:
     - 前端
