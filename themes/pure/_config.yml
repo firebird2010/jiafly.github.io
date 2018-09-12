@@ -1,13 +1,13 @@
 # menu
 menu:
   Home: .
-  Archives: archives  # 归档
-  Categories: categories  # 分类
-  Tags: tags  # 标签
+  Archives: /archives  # 归档
+  Categories: /categories  # 分类
+  Tags: /tags  # 标签
   # Repository: repository  # github repositories
   # Books: books  # 豆瓣书单
   # Links: links  # 友链
-  About: about  # 关于
+  About: /about  # 关于
 
 # Enable/Disable menu icons
 menu_icons:
@@ -180,9 +180,9 @@ profile:
   gravatar: # Gravatar email address, if you enable Gravatar, your avatar config will be overriden
   author: 东邪Jiafly
   author_title: 后端开发 & 运维
-  author_description: 个人简介。
+  author_description: 东邪Jiafly，完善中。
   location: Beijing, China
-  follow: # https://github.com/cofess
+  follow: https://github.com/jiafly
   # Social Links
   social:
     links:
@@ -205,24 +205,22 @@ profile:
     # 平面设计: ★★★☆☆
   # My Personal Links
   links:
-    Github: https://github.com/cofess
+    Github: https://github.com/jiafly
     Blog: http://blog.jiafly.com
     微博: https://weibo.com/u/6655694631
     # 花瓣: http://huaban.com/cofess
     # Behance: https://www.behance.net/cofess
   # My Personal Labels
   labels:
-    - 前端
-    - 前端开发
-    - 前端重构
-    - Web前端
-    - 网页重构
+    - 后端开发
+    - 运维
   # My Personal Works
-  works:
-    name:
-      link: http://www.example.com
-      date: 2016
+  # about 用于关于右侧展示
+#  works:
+#    name:
+#      link: http://www.example.com
+#      date: 2016
   # My Personal Projects
   projects:
-    cofess/gulp-startpro: https://github.com/cofess/gulp-startpro
-    cofess/hexo-theme-pure: https://github.com/cofess/hexo-theme-pure
+    jiafly/libra: https://github.com/jiafly/libra
+#    cofess/hexo-theme-pure: https://github.com/cofess/hexo-theme-pure
