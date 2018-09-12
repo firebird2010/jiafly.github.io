@@ -74,10 +74,11 @@ archive_type: 'monthly'
 show_count: true
 
 # Search
+# 在站点目录下执行  `npm install hexo-generator-json-content --save`
 search:
-  insight: true # you need to install `hexo-generator-json-content` before using Insight Search
-  swiftype: # enter swiftype install key here
-  baidu: false # you need to disable other search engines to use Baidu search
+  insight: true # 需要在站点目录下执行 `npm install hexo-generator-json-content --save` 并设置为true站内搜索才会生效
+  swiftype:  # enter swiftype install key here
+  baidu: true # 仅有baidu搜索为true的时候站内搜索才会使用百度搜索引擎,
 
 # Donate
 donate:
@@ -205,15 +206,20 @@ profile:
     # 平面设计: ★★★☆☆
   # My Personal Links
   links:
-    Github: https://github.com/jiafly
-    Blog: http://blog.jiafly.com
-    微博: https://weibo.com/u/6655694631
+    github: https://github.com/jiafly
+    blog: http://blog.jiafly.com
+    weibo: https://weibo.com/u/6655694631
     # 花瓣: http://huaban.com/cofess
     # Behance: https://www.behance.net/cofess
   # My Personal Labels
   labels:
-    - 后端开发
+    - Java
+    - Python
+    - Ruby
+    - Shell
+    - Mysql
     - 运维
+    - 分布式
   # My Personal Works
   # about 用于关于右侧展示
 #  works:

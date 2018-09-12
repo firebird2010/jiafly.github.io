@@ -19,14 +19,14 @@
   
   <title>从零开始使用Hexo搭建的个人博客 | Jiafly - 与你始终相伴</title>
   <meta name="description" content="1.Hexo介绍以及环境安装  Hexo介绍  Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。   Hexo安装  Hexo安装前提必须是电脑已经安装好了Git,Node.js。(这里不做介绍，自行百度)  安装完以后    1$ npm install -g hexo-cli 2.正式开始搭建个人">
-<meta name="keywords" content="hexo,blog">
+<meta name="keywords" content="Hexo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从零开始使用Hexo搭建的个人博客">
 <meta property="og:url" content="http://yoursite.com/2016/11/26/从零开始使用Hexo搭建你的个人博客/index.html">
 <meta property="og:site_name" content="Jiafly的博客">
 <meta property="og:description" content="1.Hexo介绍以及环境安装  Hexo介绍  Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。   Hexo安装  Hexo安装前提必须是电脑已经安装好了Git,Node.js。(这里不做介绍，自行百度)  安装完以后    1$ npm install -g hexo-cli 2.正式开始搭建个人">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-12T03:02:41.743Z">
+<meta property="og:updated_time" content="2018-09-12T13:47:12.784Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从零开始使用Hexo搭建的个人博客">
 <meta name="twitter:description" content="1.Hexo介绍以及环境安装  Hexo介绍  Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。   Hexo安装  Hexo安装前提必须是电脑已经安装好了Git,Node.js。(这里不做介绍，自行百度)  安装完以后    1$ npm install -g hexo-cli 2.正式开始搭建个人">
@@ -195,7 +195,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -205,7 +205,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/blog/" style="font-size: 13px;">blog</a> <a href="/tags/hexo/" style="font-size: 13px;">hexo</a>
+      <a href="/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a>
     </div>
   </div>
 
@@ -307,7 +307,7 @@
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/blog/">blog</a>, <a class="article-tag-link" href="/tags/hexo/">hexo</a>
+	<a class="article-tag-link" href="/tags/Hexo/">Hexo</a>
   </span>
 
 
@@ -575,6 +575,16 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 </script>
 <script src="/js/insight.js"></script>
     
+    
+        <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:yoursite.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
     
     
         

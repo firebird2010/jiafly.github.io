@@ -192,7 +192,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -202,7 +202,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/blog/" style="font-size: 13px;">blog</a> <a href="/tags/hexo/" style="font-size: 13px;">hexo</a>
+      <a href="/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a>
     </div>
   </div>
 
@@ -287,17 +287,17 @@
         <ul class="link-list lh-2x">
           
           <li>
-            Github:
+            github:
             <a href="https://github.com/jiafly" target="_blank">https://github.com/jiafly</a>
           </li>
           
           <li>
-            Blog:
+            blog:
             <a href="http://blog.jiafly.com" target="_blank">http://blog.jiafly.com</a>
           </li>
           
           <li>
-            微博:
+            weibo:
             <a href="https://weibo.com/u/6655694631" target="_blank">https://weibo.com/u/6655694631</a>
           </li>
           
@@ -311,9 +311,19 @@
       <h3 class="widget-title">个人标签</h3>
       <div class="widget-body">
         
-        <span class="label label-default mb">后端开发</span>
+        <span class="label label-default mb">Java</span>
+        
+        <span class="label label-default mb">Python</span>
+        
+        <span class="label label-default mb">Ruby</span>
+        
+        <span class="label label-default mb">Shell</span>
+        
+        <span class="label label-default mb">Mysql</span>
         
         <span class="label label-default mb">运维</span>
+        
+        <span class="label label-default mb">分布式</span>
         
       </div>
     </div>
@@ -416,6 +426,16 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 </script>
 <script src="/js/insight.js"></script>
     
+    
+        <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:yoursite.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
     
     
     

@@ -1,7 +1,7 @@
 ---
 title: 从零开始使用Hexo搭建的个人博客
 date: 2016-11-26 19:30:27
-tags: [hexo,blog]
+tags: [Hexo]
 ---
 
 ## 1.

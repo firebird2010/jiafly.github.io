@@ -192,7 +192,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/">JVM</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -202,7 +202,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/JVM/" style="font-size: 13px;">JVM</a> <a href="/tags/blog/" style="font-size: 13px;">blog</a> <a href="/tags/hexo/" style="font-size: 13px;">hexo</a>
+      <a href="/tags/Hexo/" style="font-size: 13px;">Hexo</a> <a href="/tags/JVM/" style="font-size: 13px;">JVM</a>
     </div>
   </div>
 
@@ -282,16 +282,14 @@
   <article class="article article-tags post-type-list" itemscope="">
     <header class="article-header">
       <h1 itemprop="name" class="hidden-xs">标签</h1>
-      <p class="text-muted hidden-xs">共 3 个标签</p>
+      <p class="text-muted hidden-xs">共 2 个标签</p>
       <nav role="navigation" id="nav-main" class="okayNav">
         <ul>
           <li><a href="/tags">All</a></li>
           
           <li><a href="/tags/JVM/">JVM</a></li>
           
-          <li><a href="/tags/hexo/">hexo</a></li>
-          
-          <li><a href="/tags/blog/">blog</a></li>
+          <li><a href="/tags/Hexo/">Hexo</a></li>
           
         </ul>
       </nav>
@@ -332,7 +330,7 @@
       </div>
       
       <h3 class="panel-title mb-1x">
-        <a href="/tags/hexo/" title="#hexo"># hexo</a>
+        <a href="/tags/Hexo/" title="#Hexo"># Hexo</a>
         <small class="text-muted">(Total 1 articles)</small>
       </h3>
       <div class="row">
@@ -351,43 +349,7 @@
    
    <div class="panel-footer">
      
-      <a href="/tags/hexo/" class="label label-default mb">hexo</a>
-     
-      <a href="/tags/blog/" class="label label-default mb">blog</a>
-     
-     
-   </div>
-   
-</article>
-
-
-        </div>
-        
-      </div>
-      
-      <h3 class="panel-title mb-1x">
-        <a href="/tags/blog/" title="#blog"># blog</a>
-        <small class="text-muted">(Total 1 articles)</small>
-      </h3>
-      <div class="row">
-        
-        <div class="col-md-6">
-          
-<article class="panel panel-default hover-shadow hover-grow" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="panel-body">
-     <div class="article-meta">
-       <time datetime="2016-11-26T11:30:27.000Z" itemprop="datePublished">2016-11-26</time>
-     </div>
-     <h3 class="article-title" itemprop="name">
-       <a class="article-link" href="/2016/11/26/从零开始使用Hexo搭建你的个人博客/">从零开始使用Hexo搭建的个人博客</a>
-     </h3>
-   </div>
-   
-   <div class="panel-footer">
-     
-      <a href="/tags/hexo/" class="label label-default mb">hexo</a>
-     
-      <a href="/tags/blog/" class="label label-default mb">blog</a>
+      <a href="/tags/Hexo/" class="label label-default mb">Hexo</a>
      
      
    </div>
@@ -454,6 +416,16 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 </script>
 <script src="/js/insight.js"></script>
     
+    
+        <script>
+(function ($) {
+    $('.search-form').on('submit', function (e) {
+        var keyword = $('.search-form-input[name="wd"]').val();
+        window.location = 'https://www.baidu.com/s?wd=site:yoursite.com ' + keyword;
+        return false;
+    });
+})(jQuery);
+</script>
     
     
     
