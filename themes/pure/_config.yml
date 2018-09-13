@@ -41,7 +41,7 @@ config:
   skin: theme-purple # 主题颜色 theme-black theme-blue theme-green theme-purple
   layout: main-center # 布局方式 main-left main-center main-right
   toc: true # 是否开启文章章节目录导航
-  menu_highlight: false # 是否开启当前菜单高亮显示
+  menu_highlight: true # 是否开启当前菜单高亮显示
   thumbnail: false # enable posts thumbnail, options: true, false
   excerpt_link: Read More
 
@@ -149,17 +149,17 @@ douban:
 # PV
 pv:
   busuanzi:
-    enable: false  # 不蒜子统计
+    enable: true  # 不蒜子统计
   leancloud:
-    enable: false  # leancloud统计
-    app_id: # leancloud <AppID>
-    app_key: # leancloud <AppKey>
+    enable: true  # leancloud统计
+    app_id: xMRwe4aGGdGSM0s3APwQvgM3-gzGzoHsz # leancloud <AppID>
+    app_key: gx5AVspJURuKY5QHvvWAkCnT # leancloud <AppKey>
         
-# wordcount
+# wordcount 文章字数 阅读时长统计 需要安装插件 `npm install hexo-wordcount --save`
 postCount:
-  enable: false
+  enable: true
   wordcount: true  # 文章字数统计
-  min2read: true  # 阅读时长预计 
+  min2read: false  # 阅读时长预计
 
 # Plugins
 plugins:
