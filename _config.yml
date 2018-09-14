@@ -5,10 +5,10 @@
 # Site
 title: Jiafly的博客
 subtitle:
-description:
+description: 做你自己爱做的事，本就是幸福的事情！
 keywords: Jiafly
 author: 东邪Jiafly
-language: zh-CN
+language: zh-Hans
 timezone:
 
 # URL
@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: pure
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
