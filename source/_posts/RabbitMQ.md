@@ -3,7 +3,7 @@
 title: RabbitMQ实战
 date: 2018-11-27 20:31:16
 tags: [rabbitMQ,消息队列]
-categories: [消息队列, 消息中间件]
+categories: [消息队列]
 ---
 # 消息中间件
 ## 什么是消息中间
