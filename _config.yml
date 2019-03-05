@@ -5,11 +5,11 @@
 # Site
 title: 桃花源
 subtitle:
-description: 用几个小时来制定计划，可以节省几周的编程时间！
+description: ！
 keywords: Jiafly
 author: 东邪Jiafly
 language: zh-Hans
-timezone:
+timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
