@@ -12,6 +12,7 @@
 
 # Set to true, if you want to fully override the default configuration.
 # Useful if you don't want to inherit the theme _config.yml configurations.
+# 如果要完全覆盖默认配置，请设置为true。如果不想继承主题配置，则非常有用。
 override: false
 
 # ---------------------------------------------------------------
@@ -50,11 +51,10 @@ footer:
   # If not defined, current year will be used.
   # 站点建立时间
   since: 2016
-
-  # Icon between year and copyright info.
+  # 年份和版权信息之间的图标.
   icon: user
 
-  # If not defined, will be used `author` from Hexo main config.
+  # 如果未定义，将使用hexo主配置中的“author”
   copyright:
   # -------------------------------------------------------------
   # Hexo link (Powered by Hexo).
@@ -62,6 +62,7 @@ footer:
 
   theme:
     # Theme & scheme info link (Theme - NexT.scheme).
+    # 主题和方案信息链接（theme-next.scheme）。
     enable: false
     # Version info of NexT after scheme info (vX.X.X).
     version: false
@@ -79,9 +80,11 @@ footer:
 canonical: true
 
 # Change headers hierarchy on site-subtitle (will be main site description) and on all post/pages titles for better SEO-optimization.
+# 更改网站副标题（将是主要网站描述）和所有文章/页面标题的标题层次结构，以更好地优化SEO
 seo: false
 
 # If true, will add site-subtitle to index page, added in main hexo config.
+# 如果为true，将在索引页中添加站点副标题，添加到主hexo配置中
 # subtitle: Subtitle
 index_with_subtitle: false
 
@@ -117,6 +120,7 @@ menu_icons:
 # Scheme Settings
 # ---------------------------------------------------------------
 
+# 主题的设置
 # Schemes
 #scheme: Muse
 #scheme: Mist
@@ -165,14 +169,12 @@ links_layout: block
 # in site  directory(source/uploads): /uploads/avatar.gif
 avatar: images/headImage.jpg
 
-# Table Of Contents in the Sidebar
+# 侧边栏中的目录
 toc:
   enable: true
-
-  # Automatically add list number to toc.
-  number: true
-
-  # If true, all words will placed on next lines if header width longer then sidebar width.
+  # 自动将列表编号添加到目录
+  number: false
+  # 如果为true，则如果标题宽度长于边栏宽度，则所有单词都将放在下一行
   wrap: false
 
 # Creative Commons 4.0 International License.
@@ -182,8 +184,7 @@ toc:
 #creative_commons:
 
 sidebar:
-  # Sidebar Position, available value: left | right (only for Pisces | Gemini).
-  # 设置侧栏的位置
+  # 设置侧栏的位置 left | right (only for Pisces | Gemini)
   position: left
   #position: right
 
@@ -199,15 +200,19 @@ sidebar:
   #display: remove
 
   # Sidebar offset from top menubar in pixels (only for Pisces | Gemini).
+  # 以像素为单位的上菜单栏的边栏偏移量
   offset: 14
 
   # Back to top in sidebar (only for Pisces | Gemini).
+  # 回到侧边栏顶端
   b2t: false
 
   # Scroll percent label in b2t button.
+  # 在B2T按钮中滚动百分比标签
   scrollpercent: false
 
   # Enable sidebar on narrow view (only for Muse | Mist).
+  # 在窄视图上启用边栏
   onmobile: false
 
 
@@ -247,6 +252,7 @@ post_wordcount:
   totalcount: true
   separated_meta: true
 
+# 微信公众号
 # Wechat Subscriber
 #wechat_subscriber:
   #enabled: true
