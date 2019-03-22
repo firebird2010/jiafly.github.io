@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content=",," />
 
 
 
@@ -79,17 +79,18 @@
 
 
 
-<meta name="description" content="穷且益坚，不坠青云之志。">
-<meta name="keywords" content="Jiafly">
+<meta name="description" content="我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。如果我们购买了云主机，我们可以在主机上自己按住mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以">
+<meta name="keywords" content="Docker,mysql">
 <meta property="og:type" content="website">
-<meta property="og:title" content="桃花源">
-<meta property="og:url" content="http://yoursite.com/archives/2018/11/index.html">
+<meta property="og:title" content="使用docker创建mysql容器">
+<meta property="og:url" content="http://yoursite.com/temp/使用docker创建mysql容器.html">
 <meta property="og:site_name" content="桃花源">
-<meta property="og:description" content="穷且益坚，不坠青云之志。">
+<meta property="og:description" content="我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。如果我们购买了云主机，我们可以在主机上自己按住mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-12T10:17:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="桃花源">
-<meta name="twitter:description" content="穷且益坚，不坠青云之志。">
+<meta name="twitter:title" content="使用docker创建mysql容器">
+<meta name="twitter:description" content="我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。如果我们购买了云主机，我们可以在主机上自己按住mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以">
 
 
 
@@ -119,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2018/11/"/>
+  <link rel="canonical" href="http://yoursite.com/temp/使用docker创建mysql容器.html"/>
 
 
 
 
 
-  <title>归档 | 桃花源</title>
+  <title>使用docker创建mysql容器 | 桃花源</title>
   
 
 
@@ -144,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -282,74 +283,72 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
 
-      <span class="archive-page-counter">
-        
-        
-        
-          
-        
-        嗯..! 目前共计 3 篇日志。 继续努力。
-      </span>
+	<h1 class="post-title" itemprop="name headline">使用docker创建mysql容器</h1>
+
+
+
+</header>
 
       
+      
+      
+      <div class="post-body">
+        
+        
+          <p>我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。如果我们购买了云主机，我们可以在主机上自己按住mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。<br>个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以安装很多实用的工具，你可以到dockerHub上去查找你需要的镜像。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><p>无论你是Windows还是Mac还是Linux，现在网上都有很多安装教程，你可以根据步骤进行安装，这里我们就当Docker已经安装完啦。</p>
+<h3 id="拉取mysql的镜像-这里使用mysql5-7"><a href="#拉取mysql的镜像-这里使用mysql5-7" class="headerlink" title="拉取mysql的镜像(这里使用mysql5.7)"></a>拉取mysql的镜像(这里使用mysql5.7)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull mysql:5.7</span><br></pre></td></tr></table></figure>
+<h2 id="启动mysql"><a href="#启动mysql" class="headerlink" title="启动mysql"></a>启动mysql</h2><p>当我们从镜像仓库拉完mysql以后，本地或者服务器上就已经有了mysql的镜像，我们可以通过命令去查看<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker images</span><br></pre></td></tr></table></figure></p>
+<p>这个命令就列出了当前主机上已经下载的所有镜像。</p>
+<h3 id="在宿主机上创建数据存储文件夹"><a href="#在宿主机上创建数据存储文件夹" class="headerlink" title="在宿主机上创建数据存储文件夹"></a>在宿主机上创建数据存储文件夹</h3><p>个人比较推荐使用docker安装镜像之后对于数据要有规律的去保存，这样也方便以后删除镜像的时候能够轻易的找到数据一起删除。所有在这里我所有使用docker安装的镜像都会在/data/docker目录下，docker目录中暗中镜像再进行分类。<br>例如：这里我要使用docker启动一个mysql的容器 容器名称为mysql001，这样我就创建如下目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir /data/docker/mysql/mysql001</span><br></pre></td></tr></table></figure></p>
+<h3 id="创建容器"><a href="#创建容器" class="headerlink" title="创建容器"></a>创建容器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run --name mysql001 -p 3306:3306  -e MYSQL_ROOT_PASSWORD=root -v /etc/localtime:/etc/localtime  -v /data/docker/mysql/mysql001:/var/lib/mysql -d mysql:5.7</span><br></pre></td></tr></table></figure>
+<p>这里我们对上面的命令进行拆解，清楚的了解每一步都是在做什么操作。</p>
+<ul>
+<li>docker run<br>这是启动一个容器</li>
+<li>–name mysql001<br>启动的容器名称为mysql001，这个名称在后面操作可直接使用名称</li>
+<li>-p 3306:3306<br>映射端口，前面一个端口是宿主机的端口，后面一个端口是mysql的端口，我们访问数据库是通过访问宿主机去访问，所以使用的是前面一个端口</li>
+<li>-e MYSQL_ROOT_PASSWORD=root<br>设置mysql的登录密码为root</li>
+<li>-v /etc/localtime:/etc/localtime<br>这个是这是启动容器的时区和宿主机一致，这个设置比较有用，不然会出现数据库中的时间比当前时间晚8小时</li>
+<li>-v /data/docker/mysql/mysql001:/var/lib/mysql<br>这个就是用刚刚创建的目录去存储mysql的数据了，我们在mysql中的所有数据都会存储在宿主器前面的目录里</li>
+<li>-d mysql:5.7<br>这个是知道启动容器的版本 如果没有的话默认就是latest 和前面pull镜像时一样</li>
+</ul>
+<h3 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h3><p>执行完上面的命令后容器并没有启动，我们可以通过执行以下命令去启动容器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker start mysql001</span><br></pre></td></tr></table></figure></p>
+<p>或者将name修改为image_id，image_id可以通过 docker images命令去查看。</p>
+<h2 id="访问mysql数据库"><a href="#访问mysql数据库" class="headerlink" title="访问mysql数据库"></a>访问mysql数据库</h2><ul>
+<li><p>方式一</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mysql-cli -h 127.0.0.1 -u root -p root</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方式二<br>使用mysql客户端如：mysqlworkbatch，navicat等客户端软件。</p>
+</li>
+</ul>
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>删除容器必须要保证容器是stop的可以通过下面的命令查看</p>
+<ul>
+<li><p>查看正在运行的容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看所有运行过的容器包括正在运行的容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>根据上面的命令可以查找到容器id，执行命令删除容器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker rm 容器id</span><br></pre></td></tr></table></figure></p>
 
         
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/11/27/RabbitMQ/" itemprop="url">
-              
-                <span itemprop="name">RabbitMQ实战</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-11-27T20:31:16+08:00"
-              content="2018-11-27" >
-          11-27
-        </time>
       </div>
-
-    </header>
-  </article>
-
-
-
       
-
+      
+      
     </div>
+    
+    
+    
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
@@ -357,7 +356,8 @@
 
 
           
-   <div id="gitalk-container"></div>
+
+  
 
 
 
@@ -380,8 +380,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -400,7 +409,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -411,7 +420,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -422,7 +431,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -468,6 +477,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Docker"><span class="nav-text">安装Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉取mysql的镜像-这里使用mysql5-7"><span class="nav-text">拉取mysql的镜像(这里使用mysql5.7)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动mysql"><span class="nav-text">启动mysql</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在宿主机上创建数据存储文件夹"><span class="nav-text">在宿主机上创建数据存储文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建容器"><span class="nav-text">创建容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动容器"><span class="nav-text">启动容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问mysql数据库"><span class="nav-text">访问mysql数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除容器"><span class="nav-text">删除容器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -495,7 +520,7 @@
     
       <span class="post-meta-item-text">Total count&#58;</span>
     
-    <span title="Total count">10k</span>
+    <span title="Total count">2.3k</span>
   
 </div>
 
@@ -637,6 +662,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -666,8 +695,6 @@
 
 
   
-
-
 
 
 
