@@ -1,11 +1,11 @@
 ---
-title: 使用docker创建mysql容器
+title: Docker-02-创建mysql容器
 date: 2019-03-10 17:45:22
 tags: [Docker,mysql]
 categories: [Docker,mysql]
 ---
 
-我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。如果我们购买了云主机，我们可以在主机上自己按住mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。
+我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。但是如果我们在电脑上安装了docker那就不一样了，或者我们购买了云主机，我们可以在主机上自己安装mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。
 个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以安装很多实用的工具，你可以到dockerHub上去查找你需要的镜像。
 ## 准备工作
 ### 安装Docker
@@ -46,7 +46,7 @@ $ docker run --name mysql001 -p 3306:3306  -e MYSQL_ROOT_PASSWORD=root -v /etc/l
 - -v /data/docker/mysql/mysql001:/var/lib/mysql
 这个就是用刚刚创建的目录去存储mysql的数据了，我们在mysql中的所有数据都会存储在宿主器前面的目录里
 - -d mysql:5.7
-这个是知道启动容器的版本 如果没有的话默认就是latest 和前面pull镜像时一样
+-d是开启Daemon模式即保护进程的方式运行。最后的这个是知道启动容器的版本 如果没有的话默认就是latest 和前面pull镜像时一样
 
 ### 启动容器
 执行完上面的命令后容器并没有启动，我们可以通过执行以下命令去启动容器
