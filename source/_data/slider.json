@@ -1,11 +1,11 @@
 [{
-    "image": "http://lorempixel.com/580/250/nature/1",
+    "image": "http://pic.jiafly.com/blog/chengxuyuandeyangzi.jpeg",
     "align": "center",
-    "title": "This is our big Tagline!",
-    "subtitle": "Here's our small slogan.",
+    "title": "",
+    "subtitle": "",
 	"link": "/"
 }, {
-    "image": "http://lorempixel.com/580/250/nature/2",
+    "image": "http://pic.jiafly.com/blog/01.jpeg",
     "align": "left",
     "title": "Left Aligned Caption",
     "subtitle": "Here's our small slogan.",
