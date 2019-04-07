@@ -1,37 +1,41 @@
 ---
 title: Docker-02-创建mysql容器
 date: 2019-03-10 17:45:22
-tags: [Docker,mysql]
-categories: [Docker,mysql]
+tags: 
+    - docker
+    - mysql
+categories: 
+    - docker
 ---
-
+# 1. 前言
 我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。但是如果我们在电脑上安装了docker那就不一样了，或者我们购买了云主机，我们可以在主机上自己安装mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。
 个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以安装很多实用的工具，你可以到dockerHub上去查找你需要的镜像。
-## 准备工作
-### 安装Docker
+# 2. 准备工作
+## 2.1 安装Docker
 无论你是Windows还是Mac还是Linux，现在网上都有很多安装教程，你可以根据步骤进行安装，这里我们就当Docker已经安装完啦。
-### 拉取mysql的镜像(这里使用mysql5.7)
+## 2.2 拉取mysql的镜像(这里使用mysql5.7)
 ```bash
 $ docker pull mysql:5.7
 ```
 
-## 启动mysql
+## 2.3 启动mysql
 当我们从镜像仓库拉完mysql以后，本地或者服务器上就已经有了mysql的镜像，我们可以通过命令去查看
 ```bash
 $ docker images 
 ```
 这个命令就列出了当前主机上已经下载的所有镜像。
-### 在宿主机上创建数据存储文件夹
+## 2.4 在宿主机上创建数据存储文件夹
 个人比较推荐使用docker安装镜像之后对于数据要有规律的去保存，这样也方便以后删除镜像的时候能够轻易的找到数据一起删除。所有在这里我所有使用docker安装的镜像都会在/data/docker目录下，docker目录中暗中镜像再进行分类。
 例如：这里我要使用docker启动一个mysql的容器 容器名称为mysql001，这样我就创建如下目录
 ```bash
 $ mkdir /data/docker/mysql/mysql001
 ```
-### 创建容器
+### 2.5 创建容器
 ```bash
 $ docker run --name mysql001 -p 3306:3306  -e MYSQL_ROOT_PASSWORD=root -v /etc/localtime:/etc/localtime  -v /data/docker/mysql/mysql001:/var/lib/mysql -d mysql:5.7 
-
 ```
+<!-- more -->
+
 这里我们对上面的命令进行拆解，清楚的了解每一步都是在做什么操作。
 - docker run 
 这是启动一个容器
