@@ -2,8 +2,10 @@
 ---
 title: 五分钟弄懂UML-类图
 date: 2018-04-01 01:23:16
-tags: [UML]
-categories: [UML]
+tags: 
+    - uml
+categories: 
+    - uml
 ---
 # 1. 前言
 
