@@ -4,8 +4,8 @@
 
 # Site
 title: 桃花源
-subtitle:
-description: 穷且益坚，不坠青云之志。
+subtitle: 巧者劳，智者忧，唯无能者无所求。
+description: 无法接受一成不变的工作，也无法面对停滞不前的自己！
 keywords: Jiafly
 author: 东邪Jiafly
 language: zh-CN
@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-next
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
