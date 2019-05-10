@@ -1,11 +1,11 @@
 ---
-title: HashMap源码阅读(一)
+title: 对比Hashtable、HashMap、TreeMap有什么不同
 date: 2018-04-19 01:23:16
 tags: 
     - HashMap
-    
+    - Map
 categories: 
-    - java
+    - HashMap
 notshow: true
 ---
 # 前言
@@ -14,3 +14,8 @@ notshow: true
 # 正文
 ## 哈希表
 在说HashMap之前呢，我们首先来了解一下什么是哈希表。hash
+
+## HashMap源码阅读
+关于hashMap的源码阅读，相信很多人都看过，但是全部看完的应该只有其中的三分之一吧。所以在这里我会它的源码进行分析。有啥不足的，和没有表达清楚的地方可以留言和我一起探讨哈。
+
+对于hashMap的源码
