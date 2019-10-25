@@ -2,21 +2,23 @@
 title: Java8-Stream中的常用操作
 date: 2019-05-16 22:23:11
 tags:
-    - java8
+    - Java8
     - stream
 categories: 
     - java
+notshow: true
 ---
 # 1.前言
 Java8提供了很多新特性，其中有一个就是基于流Stream的操作。Stream是一组用来处理数组，集合的API
 ## 1.1 特性
+<!-- more -->
 - 不是数据结构，没有内部存储。
 - 不支持索引访问。
 - 延迟计算
 - 支持并行
 - 很容易生成数据或集合
 - 支持过滤，查找，转换，汇总，聚合等操作
-<!-- more -->
+
 
 ## 1.2 运行机制
 Stream分为源source，中间操作，终止操作。

@@ -6,6 +6,7 @@ tags:
     - 消息队列
 categories: 
     - 消息队列
+notshow: true
 ---
 ![RabbitMQ](/image/rabbit/mq-login.jpg)
 # 1.消息中间件
