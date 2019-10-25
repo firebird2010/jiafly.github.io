@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/headImage.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Orika是Java Bean映射框架，可以实现从一个对象递归拷贝数据至另一个对象。这样我们可以将数据在实体，DTO，VO之间切换。关于Bean映射，其实BeanUtil中的copyProperties()方法也可以实现，但是如果名字相同类型不同的的是不能直接复制的，而orika却可以解决这个问题。">
+<meta name="keywords" content="Bean映射,Orika,Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Orika实现Java Bean映射">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;2019&#x2F;05&#x2F;29&#x2F;java&#x2F;%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84&#x2F;index.html">
+<meta property="og:site_name" content="东邪Jiafly">
+<meta property="og:description" content="Orika是Java Bean映射框架，可以实现从一个对象递归拷贝数据至另一个对象。这样我们可以将数据在实体，DTO，VO之间切换。关于Bean映射，其实BeanUtil中的copyProperties()方法也可以实现，但是如果名字相同类型不同的的是不能直接复制的，而orika却可以解决这个问题。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-05T03:26:24.270Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.jiafly.com/2019/05/29/java/%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>使用Orika实现Java Bean映射 | 东邪Jiafly</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">东邪Jiafly</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">巧者劳，智者忧，唯无能者无所求。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fort-awesome"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-folder-open"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-vcard-o"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/29/java/%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headImage.jpg">
+      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="东邪Jiafly">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Orika实现Java Bean映射
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-29 12:00:00" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00+08:00">2019-05-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:24" itemprop="dateModified" datetime="2019-09-05T11:26:24+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Orika是Java Bean映射框架，可以实现从一个对象递归拷贝数据至另一个对象。这样我们可以将数据在实体，DTO，VO之间切换。关于Bean映射，其实BeanUtil中的copyProperties()方法也可以实现，但是如果名字相同类型不同的的是不能直接复制的，而orika却可以解决这个问题。</p>
+<a id="more"></a>
+<h1 id="1-引入orika的jar包"><a href="#1-引入orika的jar包" class="headerlink" title="1.引入orika的jar包"></a>1.引入orika的jar包</h1><p>现在用的大部分都是使用的maven文件，可以在pom.xml文件中引入下列配置即可。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ma.glasnost.orika<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>orika-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="2-创建映射工具类"><a href="#2-创建映射工具类" class="headerlink" title="2.创建映射工具类"></a>2.创建映射工具类</h1><p>之前创建没有使用单例，造成了内存溢出的情况，后来采用单例的模式，解决了这个问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.jiafly.libra.common.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ma.glasnost.orika.MapperFacade;</span><br><span class="line"><span class="keyword">import</span> ma.glasnost.orika.MapperFactory;</span><br><span class="line"><span class="keyword">import</span> ma.glasnost.orika.impl.DefaultMapperFactory;</span><br><span class="line"><span class="keyword">import</span> ma.glasnost.orika.metadata.ClassMapBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ConcurrentHashMap;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 映射工具类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 东邪Jiafly</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> MapperUtils &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    INSTANCE;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认字段工厂</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MapperFactory MAPPER_FACTORY = <span class="keyword">new</span> DefaultMapperFactory.Builder().build();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认字段实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MapperFacade MAPPER_FACADE = MAPPER_FACTORY.getMapperFacade();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认字段实例集合</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, MapperFacade&gt; CACHE_MAPPER_FACADE_MAP = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 映射实体（默认字段）</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> toClass 映射类对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data    数据（对象）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 映射类对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;E, T&gt; <span class="function">E <span class="title">map</span><span class="params">(Class&lt;E&gt; toClass, T data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> MAPPER_FACADE.map(data, toClass);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 映射实体（自定义配置）</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> toClass   映射类对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data      数据（对象）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> configMap 自定义配置</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 映射类对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;E, T&gt; <span class="function">E <span class="title">map</span><span class="params">(Class&lt;E&gt; toClass, T data, Map&lt;String, String&gt; configMap)</span> </span>&#123;</span><br><span class="line">        MapperFacade mapperFacade = <span class="keyword">this</span>.getMapperFacade(toClass, data.getClass(), configMap);</span><br><span class="line">        <span class="keyword">return</span> mapperFacade.map(data, toClass);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 映射集合（默认字段）</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> toClass 映射类对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data    数据（集合）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 映射类对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;E, T&gt; <span class="function">List&lt;E&gt; <span class="title">mapAsList</span><span class="params">(Class&lt;E&gt; toClass, Collection&lt;T&gt; data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> MAPPER_FACADE.mapAsList(data, toClass);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 映射集合（自定义配置）</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> toClass   映射类</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data      数据（集合）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> configMap 自定义配置</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 映射类对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;E, T&gt; <span class="function">List&lt;E&gt; <span class="title">mapAsList</span><span class="params">(Class&lt;E&gt; toClass, Collection&lt;T&gt; data, Map&lt;String, String&gt; configMap)</span> </span>&#123;</span><br><span class="line">        T t = data.stream().findFirst().orElseThrow(() -&gt; <span class="keyword">new</span> ResourceNotExistException(<span class="string">"映射集合，数据集合为空"</span>));</span><br><span class="line">        MapperFacade mapperFacade = <span class="keyword">this</span>.getMapperFacade(toClass, t.getClass(), configMap);</span><br><span class="line">        <span class="keyword">return</span> mapperFacade.mapAsList(data, toClass);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取自定义映射</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> toClass   映射类</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dataClass 数据映射类</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> configMap 自定义配置</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 映射类对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> &lt;E, T&gt; <span class="function">MapperFacade <span class="title">getMapperFacade</span><span class="params">(Class&lt;E&gt; toClass, Class&lt;T&gt; dataClass, Map&lt;String, String&gt; configMap)</span> </span>&#123;</span><br><span class="line">        String mapKey = dataClass.getCanonicalName() + <span class="string">"_"</span> + toClass.getCanonicalName();</span><br><span class="line">        MapperFacade mapperFacade = CACHE_MAPPER_FACADE_MAP.get(mapKey);</span><br><span class="line">        <span class="keyword">if</span> (Objects.isNull(mapperFacade)) &#123;</span><br><span class="line">            MapperFactory factory = <span class="keyword">new</span> DefaultMapperFactory.Builder().build();</span><br><span class="line">            ClassMapBuilder classMapBuilder = factory.classMap(dataClass, toClass);</span><br><span class="line">            configMap.forEach(classMapBuilder::field);</span><br><span class="line">            classMapBuilder.byDefault().register();</span><br><span class="line">            mapperFacade = factory.getMapperFacade();</span><br><span class="line">            CACHE_MAPPER_FACADE_MAP.put(mapKey, mapperFacade);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mapperFacade;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-使用映射工具类"><a href="#3-使用映射工具类" class="headerlink" title="3.使用映射工具类"></a>3.使用映射工具类</h1><p>这个工具列中主要有四个方法来根据不同需求去映射对象。</p>
+<ul>
+<li><p><strong>map(Class<E> toClass, T data)</strong><br>这个是普通的映射实体，主要映射命名相同的默认字段。</p>
+</li>
+<li><p><strong>map(Class<E> toClass, T data, Map&lt;String, String&gt; configMap)</strong><br>这是个自定义配置的映射集合，当name</p>
+</li>
+<li><p><strong>mapAsList(Class<E> toClass, Collection<T> data)</strong><br>这个是针对集合的映射</p>
+</li>
+<li><p><strong>mapAsList(Class<E> toClass, Collection<T> data, Map&lt;String, String&gt; configMap)</strong><br>这是针对集合配置并且自定义配置</p>
+</li>
+</ul>
+<h1 id="4-结语"><a href="#4-结语" class="headerlink" title="4.结语"></a>4.结语</h1><p>这篇主要是针对使用Orika的使用写了一个工具类，以方便我们在需要的时候直接使用，当然如果想对Orika有一些更高级的使用，可以继续阅读Orika的源码，分析它具体的实现原理。</p>
+
+    </div>
+
+    
+    
+    
+      
+        <div class="reward-container">
+  <div>您的支持，是我坚持不懈的动力！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="东邪Jiafly 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="东邪Jiafly 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bean%E6%98%A0%E5%B0%84/" rel="tag"># Bean映射</a>
+              <a href="/tags/Orika/" rel="tag"># Orika</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/05/28/jvm/JVM-%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84/" rel="next" title="JVM-内存结构">
+                  <i class="fa fa-chevron-left"></i> JVM-内存结构
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/06/21/test/JMeter%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" rel="prev" title="JMeter基础使用指南">
+                  JMeter基础使用指南 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-引入orika的jar包"><span class="nav-text">1.引入orika的jar包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-创建映射工具类"><span class="nav-text">2.创建映射工具类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-使用映射工具类"><span class="nav-text">3.使用映射工具类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-结语"><span class="nav-text">4.结语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="东邪Jiafly"
+    src="/images/headImage.jpg">
+  <p class="site-author-name" itemprop="name">东邪Jiafly</p>
+  <div class="site-description" itemprop="description">无法接受一成不变的工作，也无法面对停滞不前的自己！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jiafly" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;jiafly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuyi1181@163.com" title="邮箱 &amp;rarr; mailto:liuyi1181@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/6655694631" title="微博 &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;6655694631" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.tangtu.top/" title="唐突世界 &amp;rarr; https:&#x2F;&#x2F;www.tangtu.top" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i></a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.tangtu.top/" title="http:&#x2F;&#x2F;www.tangtu.top&#x2F;" rel="noopener" target="_blank">唐突世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="copyright"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备17013722号-1 </a>
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">东邪Jiafly</span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("09/19/2018 20:13:14");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已正常运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'd0ee88d96b7bcd08572e',
+      clientSecret: '82d1a1b9d462077a4fcc5242682984e46780aeda',
+      repo: 'jiafly.github.io',
+      owner: 'jiafly',
+      admin: ['jiafly'],
+      id: '53a92a1dde5e5c4358527c628eb71b5d',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

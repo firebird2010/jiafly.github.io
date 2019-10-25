@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/headImage.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.前言最近开发完项目需要对接口进行压力测试，于是就想到了JMeter,正好借此机会对JMeter的安装使用流程记录一下，既可以加深自己的记忆，也能在之后别人咨询的时候有文章可供其参考。">
+<meta name="keywords" content="JMeter,测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JMeter基础使用指南">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;2019&#x2F;06&#x2F;21&#x2F;test&#x2F;JMeter%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97&#x2F;index.html">
+<meta property="og:site_name" content="东邪Jiafly">
+<meta property="og:description" content="1.前言最近开发完项目需要对接口进行压力测试，于是就想到了JMeter,正好借此机会对JMeter的安装使用流程记录一下，既可以加深自己的记忆，也能在之后别人咨询的时候有文章可供其参考。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-main.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-language.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-create.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-http.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-interface.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-listen.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-resulttree.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-result.jpg">
+<meta property="og:updated_time" content="2019-09-05T03:35:31.291Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jmeter&#x2F;jmeter-main.jpg">
+
+<link rel="canonical" href="http://www.jiafly.com/2019/06/21/test/JMeter%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>JMeter基础使用指南 | 东邪Jiafly</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">东邪Jiafly</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">巧者劳，智者忧，唯无能者无所求。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fort-awesome"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-folder-open"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-vcard-o"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/06/21/test/JMeter%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headImage.jpg">
+      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="东邪Jiafly">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JMeter基础使用指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-21 15:25:00" itemprop="dateCreated datePublished" datetime="2019-06-21T15:25:00+08:00">2019-06-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:35:31" itemprop="dateModified" datetime="2019-09-05T11:35:31+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">测试</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h1><p>最近开发完项目需要对接口进行压力测试，于是就想到了JMeter,正好借此机会对JMeter的安装使用流程记录一下，既可以加深自己的记忆，也能在之后别人咨询的时候有文章可供其参考。</p>
+<a id="more"></a>
+<h1 id="2-JMeter安装"><a href="#2-JMeter安装" class="headerlink" title="2.JMeter安装"></a>2.JMeter安装</h1><h2 id="2-1-下载JMeter"><a href="#2-1-下载JMeter" class="headerlink" title="2.1 下载JMeter"></a>2.1 下载JMeter</h2><p>使用工具之前肯定是需要安装的。这里提供<a href="http://jmeter.apache.org/" target="_blank" rel="noopener">JMeter的官网</a>，可以在<a href="http://jmeter.apache.org/download_jmeter.cgi" target="_blank" rel="noopener">这里</a>下载JMeter。</p>
+<h2 id="2-2-安装JMeter"><a href="#2-2-安装JMeter" class="headerlink" title="2.2 安装JMeter"></a>2.2 安装JMeter</h2><blockquote>
+<p>JMeter的运行必须依赖Java环境，所以必须确保你的机器已经安装了JDK。在这里就不介绍JDK的安装了，默认你机器的JDK已经安装可以使用。</p>
+</blockquote>
+<p>下载JMeter以后解压到你指定的目录，我的是保存在<code>/data/utils/apache-jmeter-5.0</code>这个目录。然后进入到<code>bin</code>目录，如果是在linux或者macOS系统上直接运行<code>jmeter.sh</code>文件或者<code>jmeter</code>，但如果是在Windows系统则直接运行<code>jmeter.bat</code>文件。运行以后你可以看到JMeter就启动了。<br><img src="/image/jmeter/jmeter-main.jpg" alt="JMeter主界面"></p>
+<p>对于英语不好的同学可以切换一下语言，如下图:<br><img src="/image/jmeter/jmeter-language.jpg" alt="JMeter切换语言"></p>
+<p>这样JMeter就安装完成了，接下来就是使用JMeter的具体功能了。</p>
+<h1 id="3-JMeter使用"><a href="#3-JMeter使用" class="headerlink" title="3.JMeter使用"></a>3.JMeter使用</h1><h2 id="3-1-添加线程组-用户"><a href="#3-1-添加线程组-用户" class="headerlink" title="3.1 添加线程组(用户)"></a>3.1 添加线程组(用户)</h2><p>如图右键点击Test Plan 就会弹出选择框根据选择框，如图操作添加即可。创建需要保存成jmx文件，选择文件要保存的位置即可。<br><img src="/image/jmeter/jmeter-create.jpg" alt="创建线程组"></p>
+<h2 id="3-2-添加测试接口"><a href="#3-2-添加测试接口" class="headerlink" title="3.2 添加测试接口"></a>3.2 添加测试接口</h2><p>如下图：添加http接口<br><img src="/image/jmeter/jmeter-http.jpg" alt="添加测试接口"></p>
+<p>在测试接口中添加接口请求信息 包括请求方式，请求地址，端口，以及参数等。<br><img src="/image/jmeter/jmeter-interface.jpg" alt="测试接口数据"></p>
+<h2 id="3-3-添加监视器"><a href="#3-3-添加监视器" class="headerlink" title="3.3 添加监视器"></a>3.3 添加监视器</h2><p>执行完成以后我们需要知道执行结果数据，这里JMeter也提供了监视器供我们去直观的查看接口执行信息。<br><img src="/image/jmeter/jmeter-listen.jpg" alt="添加监听器"></p>
+<h2 id="3-4-启动测试用例"><a href="#3-4-启动测试用例" class="headerlink" title="3.4 启动测试用例"></a>3.4 启动测试用例</h2><p>在JMeter最上方有一个绿色的按钮启动即可，我们也可在线程组页面修改线程数，是否一直执行等数据。</p>
+<h1 id="4-查看执行后的数据"><a href="#4-查看执行后的数据" class="headerlink" title="4.查看执行后的数据"></a>4.查看执行后的数据</h1><p>我们在上面添加了监视器，在执行的时候我们可以切换到监视器的视图中查看执行的情况，接口的响应时间，响应状态等情况，以方便我们对程序作出合适的修改，提高效率。</p>
+<ul>
+<li>结果树:<br><img src="/image/jmeter/jmeter-resulttree.jpg" alt="结果树"></li>
+<li>汇总报告:<br><img src="/image/jmeter/jmeter-result.jpg" alt="汇总报告"></li>
+</ul>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>通过以上操作就完成了一个接口的测试了，上面演示的只是get请求，post请求的参是body，使用的格式是Json。</p>
+<p>以上只是初步的使用了JMeter工具，在不会使用JMeter的时候我也只能自己使用脚本语言(Ruby)开启多线程去调用。相比之下，JMeter还是非常简单的，即使没有编程基础一样可以做压测，是不是很棒？</p>
+
+    </div>
+
+    
+    
+    
+      
+        <div class="reward-container">
+  <div>您的支持，是我坚持不懈的动力！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="东邪Jiafly 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="东邪Jiafly 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JMeter/" rel="tag"># JMeter</a>
+              <a href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag"># 测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/05/29/java/%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84/" rel="next" title="使用Orika实现Java Bean映射">
+                  <i class="fa fa-chevron-left"></i> 使用Orika实现Java Bean映射
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/06/27/jvm/JVM%E7%B3%BB%E5%88%97-JVM%E8%87%AA%E5%B8%A6%E5%B7%A5%E5%85%B7/" rel="prev" title="JVM系列-自带故障处理工具">
+                  JVM系列-自带故障处理工具 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-前言"><span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-JMeter安装"><span class="nav-text">2.JMeter安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-下载JMeter"><span class="nav-text">2.1 下载JMeter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-安装JMeter"><span class="nav-text">2.2 安装JMeter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-JMeter使用"><span class="nav-text">3.JMeter使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-添加线程组-用户"><span class="nav-text">3.1 添加线程组(用户)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-添加测试接口"><span class="nav-text">3.2 添加测试接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-添加监视器"><span class="nav-text">3.3 添加监视器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-启动测试用例"><span class="nav-text">3.4 启动测试用例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-查看执行后的数据"><span class="nav-text">4.查看执行后的数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-text">结语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="东邪Jiafly"
+    src="/images/headImage.jpg">
+  <p class="site-author-name" itemprop="name">东邪Jiafly</p>
+  <div class="site-description" itemprop="description">无法接受一成不变的工作，也无法面对停滞不前的自己！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jiafly" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;jiafly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuyi1181@163.com" title="邮箱 &amp;rarr; mailto:liuyi1181@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/6655694631" title="微博 &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;6655694631" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.tangtu.top/" title="唐突世界 &amp;rarr; https:&#x2F;&#x2F;www.tangtu.top" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i></a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.tangtu.top/" title="http:&#x2F;&#x2F;www.tangtu.top&#x2F;" rel="noopener" target="_blank">唐突世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="copyright"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备17013722号-1 </a>
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">东邪Jiafly</span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("09/19/2018 20:13:14");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已正常运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'd0ee88d96b7bcd08572e',
+      clientSecret: '82d1a1b9d462077a4fcc5242682984e46780aeda',
+      repo: 'jiafly.github.io',
+      owner: 'jiafly',
+      admin: ['jiafly'],
+      id: '9cbc4594dff1f1f53d9fa3cd2f6b5782',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

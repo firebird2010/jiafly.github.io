@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/headImage.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.前言Java8提供了很多新特性，其中有一个就是基于流Stream的操作。Stream是一组用来处理数组，集合的API 1.1 特性">
+<meta name="keywords" content="Java8,stream">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8-Stream中的常用操作">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;2019&#x2F;05&#x2F;16&#x2F;java&#x2F;Java8-Stream%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C&#x2F;index.html">
+<meta property="og:site_name" content="东邪Jiafly">
+<meta property="og:description" content="1.前言Java8提供了很多新特性，其中有一个就是基于流Stream的操作。Stream是一组用来处理数组，集合的API 1.1 特性">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;java8Stream.jpg">
+<meta property="og:updated_time" content="2019-09-05T03:26:27.609Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;java8Stream.jpg">
+
+<link rel="canonical" href="http://www.jiafly.com/2019/05/16/java/Java8-Stream%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Java8-Stream中的常用操作 | 东邪Jiafly</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">东邪Jiafly</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">巧者劳，智者忧，唯无能者无所求。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fort-awesome"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-folder-open"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-vcard-o"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/16/java/Java8-Stream%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headImage.jpg">
+      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="东邪Jiafly">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java8-Stream中的常用操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-16 22:23:11" itemprop="dateCreated datePublished" datetime="2019-05-16T22:23:11+08:00">2019-05-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:27" itemprop="dateModified" datetime="2019-09-05T11:26:27+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h1><p>Java8提供了很多新特性，其中有一个就是基于流Stream的操作。Stream是一组用来处理数组，集合的API</p>
+<h2 id="1-1-特性"><a href="#1-1-特性" class="headerlink" title="1.1 特性"></a>1.1 特性</h2><a id="more"></a>
+<ul>
+<li>不是数据结构，没有内部存储。</li>
+<li>不支持索引访问。</li>
+<li>延迟计算</li>
+<li>支持并行</li>
+<li>很容易生成数据或集合</li>
+<li>支持过滤，查找，转换，汇总，聚合等操作</li>
+</ul>
+<h2 id="1-2-运行机制"><a href="#1-2-运行机制" class="headerlink" title="1.2 运行机制"></a>1.2 运行机制</h2><p>Stream分为源source，中间操作，终止操作。</p>
+<ul>
+<li>流的源可以是一个数组，集合，生成器方法，I/O通道等等。</li>
+<li>一个流可以有零个或多个中间操作，每一个中间操作都会返回一个新的流，供下一个操作使用，一个流只会有一个终止操作。</li>
+<li>Stream只有遇到终止操作，它的源才会开始执行遍历操作。</li>
+</ul>
+<h2 id="1-3-Stream的创建"><a href="#1-3-Stream的创建" class="headerlink" title="1.3 Stream的创建"></a>1.3 Stream的创建</h2><p><code>Stream</code>的创建其实有很多方式，但是我们在平时用到最多的可能就是基于数组的Stream.of()和集合的stream()方法其实它还有很多种的创建方式，下面将一一列出，并且列举相关实例。</p>
+<ul>
+<li>1.通过数组,Stream.of()</li>
+<li>2.通过集合</li>
+<li>3.通过Stream.generate方法来创建</li>
+<li>4.通过Stram.iterate方法</li>
+<li>5.其他API<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CreateStream</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1.通过数组,Stream.of()</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        String[] str = &#123;<span class="string">"a"</span>,<span class="string">"b"</span>,<span class="string">"c"</span>&#125;;</span><br><span class="line">        Stream&lt;String&gt; str1 = Stream.of(str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.通过集合</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create2</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; strings = Arrays.asList(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>);</span><br><span class="line">        Stream&lt;String&gt; stream = strings.stream();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3.通过Stream.generate方法来创建</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create3</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//这是一个无限流，通过这种方法创建在操作的时候最好加上limit进行限制</span></span><br><span class="line">        Stream&lt;Integer&gt; generate = Stream.generate(() -&gt; <span class="number">1</span>);</span><br><span class="line">        generate.limit(<span class="number">10</span>).forEach(x -&gt; System.out.println(x));</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="comment">// 4.通过Stram.iterate方法</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create4</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Stream&lt;Integer&gt; iterate = Stream.iterate(<span class="number">1</span>, x -&gt; x +<span class="number">1</span>);</span><br><span class="line">        iterate.forEach(x -&gt; System.out.println(x));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 5.其他API</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">create5</span><span class="params">()</span></span>&#123;</span><br><span class="line">        String str = <span class="string">"abc"</span>;</span><br><span class="line">        IntStream chars = str.chars();</span><br><span class="line">        chars.forEach(x -&gt; System.out.println(x));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="2-Stream的常用操作-API"><a href="#2-Stream的常用操作-API" class="headerlink" title="2.Stream的常用操作(API)"></a>2.Stream的常用操作(API)</h1><h2 id="2-1-中间操作"><a href="#2-1-中间操作" class="headerlink" title="2.1 中间操作"></a>2.1 中间操作</h2><h3 id="2-1-1-filter过滤"><a href="#2-1-1-filter过滤" class="headerlink" title="2.1.1 filter过滤"></a>2.1.1 filter过滤</h3><p>接受一个谓词（一个返回boolean的函数）作为参数，并返回一个包括所有符合谓词的元素的流。说白了就是给一个条件，filter会根据这个条件截取流中得数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testFilter</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>);</span><br><span class="line">    <span class="comment">//截取所有能被2整除得数据</span></span><br><span class="line">    List&lt;Integer&gt; collect = integers.stream().filter(i -&gt; i % <span class="number">2</span> == <span class="number">0</span>).collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果: collect = [2, 4, 6, 8, 10]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-2-distinct去重"><a href="#2-1-2-distinct去重" class="headerlink" title="2.1.2 distinct去重"></a>2.1.2 distinct去重</h3><p>返回一个元素各异（根据流所生成元素的hashCode和equals方法实现）的流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>);</span><br><span class="line">    List&lt;Integer&gt; collect = numbers.stream().distinct().collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果: collect = [1, 2, 3, 4]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-3-sorted排序"><a href="#2-1-3-sorted排序" class="headerlink" title="2.1.3 sorted排序"></a>2.1.3 sorted排序</h3><p>对流中得数据进行排序，可以以自然序或着用Comparator接口定义的排序规则来排序一个流。Comparator能使用lambada表达式来初始化，还能够逆序一个已经排序的流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integers = Arrays.asList(<span class="number">5</span>, <span class="number">8</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">41</span>, <span class="number">11</span>);</span><br><span class="line">    <span class="comment">//排序默认为顺序  顺序 = [2, 5, 6, 8, 11, 41]</span></span><br><span class="line">    List&lt;Integer&gt; sorted = integers.stream().sorted().collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">"顺序 = "</span> + sorted);</span><br><span class="line">    <span class="comment">//逆序    逆序 = [41, 11, 8, 6, 5, 2]</span></span><br><span class="line">    List&lt;Integer&gt; reverseOrder = integers.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">"逆序 = "</span> + reverseOrder);</span><br><span class="line">    <span class="comment">//也可以接收一个lambda</span></span><br><span class="line">    List&lt;Integer&gt; ages = integers.stream().sorted(Comparator.comparing(User::getAge)).collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-4-limit截取"><a href="#2-1-4-limit截取" class="headerlink" title="2.1.4 limit截取"></a>2.1.4 limit截取</h3><p>会返回一个不超过给定长度的流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testLimit</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>);</span><br><span class="line">    List&lt;Integer&gt; collect = integers.stream().limit(<span class="number">3</span>).collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果: collect = [1, 2, 1]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-5-skip舍弃"><a href="#2-1-5-skip舍弃" class="headerlink" title="2.1.5 skip舍弃"></a>2.1.5 skip舍弃</h3><p>会返回一个扔掉了前面n个元素的流。如果流中元素不足n个，则返回一个空流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testSkip</span><span class="params">()</span></span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="comment">//丢掉流中得前三个元素  </span></span><br><span class="line">    List&lt;Integer&gt; collect = integers.stream().skip(<span class="number">3</span>).collect(Collectors.toList());</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果: collect = [3, 3, 2, 4]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-6-map归纳"><a href="#2-1-6-map归纳" class="headerlink" title="2.1.6 map归纳"></a>2.1.6 map归纳</h3><p>接受一个函数作为参数，这个函数会被应用到每个元素上，并将其映射成一个新的元素。就是根据指定函数获取流中得每个元素得数据并重新组合成一个新的元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//自己建好得一个获取对象list得方法</span></span><br><span class="line">    List&lt;Dish&gt; dishList = Dish.getDishList();</span><br><span class="line">    <span class="comment">//获取每一道菜得名称  并放到一个list中</span></span><br><span class="line">    List&lt;String&gt; collect = dishList.stream().map(Dish::getName).collect(Collectors.toList());</span><br><span class="line">    <span class="comment">//collect = [pork, beef, chicken, french fries, rice, season fruit, pizza, prawns, salmon]</span></span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-7-flatMap扁平化"><a href="#2-1-7-flatMap扁平化" class="headerlink" title="2.1.7 flatMap扁平化"></a>2.1.7 flatMap扁平化</h3><p>该方法key可以让你把一个流中的每个值都换成另一个流，然后把所有的流都链接起来成为一个流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    String[] words = &#123;<span class="string">"Hello"</span>, <span class="string">"World"</span>&#125;;</span><br><span class="line">    List&lt;String&gt; collect = Stream.of(words).        <span class="comment">//数组转换流</span></span><br><span class="line">            map(w -&gt; w.split(<span class="string">""</span>)).  <span class="comment">//去掉“”并获取到两个String[]</span></span><br><span class="line">            flatMap(Arrays::stream).        <span class="comment">//方法调用将两个String[]扁平化为一个stream</span></span><br><span class="line">            distinct().                     <span class="comment">//去重    </span></span><br><span class="line">            collect(Collectors.toList());</span><br><span class="line">    <span class="comment">//collect = [H, e, l, o, W, r, d]</span></span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-8-peek"><a href="#2-1-8-peek" class="headerlink" title="2.1.8 peek"></a>2.1.8 peek</h3><p>peek的设计初衷就是在流的每个元素恢复运行之前，插入执行一个动作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line">    List&lt;Integer&gt; result =</span><br><span class="line">            numbers.stream()</span><br><span class="line">                    .peek(x -&gt; System.out.println(<span class="string">"from stream: "</span> + x))</span><br><span class="line">                    .map(x -&gt; x + <span class="number">17</span>)</span><br><span class="line">                    .peek(x -&gt; System.out.println(<span class="string">"after map: "</span> + x))</span><br><span class="line">                    .filter(x -&gt; x % <span class="number">2</span> == <span class="number">0</span>)</span><br><span class="line">                    .peek(x -&gt; System.out.println(<span class="string">"after filter: "</span> + x))</span><br><span class="line">                    .limit(<span class="number">3</span>)</span><br><span class="line">                    .peek(x -&gt; System.out.println(<span class="string">"after limit: "</span> + x))</span><br><span class="line">                    .collect(Collectors.toList());</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果：</span></span><br><span class="line"><span class="comment">//     from stream: 2</span></span><br><span class="line"><span class="comment">//     after map: 19</span></span><br><span class="line"><span class="comment">//     from stream: 3</span></span><br><span class="line"><span class="comment">//     after map: 20</span></span><br><span class="line"><span class="comment">//     after filter: 20</span></span><br><span class="line"><span class="comment">//     after limit: 20</span></span><br><span class="line"><span class="comment">//     from stream: 4</span></span><br><span class="line"><span class="comment">//     after map: 21</span></span><br><span class="line"><span class="comment">//     from stream: 5</span></span><br><span class="line"><span class="comment">//     after map: 22</span></span><br><span class="line"><span class="comment">//     after filter: 22</span></span><br><span class="line"><span class="comment">//     after limit: 22</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-9-collect收集"><a href="#2-1-9-collect收集" class="headerlink" title="2.1.9 collect收集"></a>2.1.9 collect收集</h3><p>从上面得代码已经可以看出来，collect是将最终stream中得数据收集起来，最终生成一个list，set，或者map。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dishList = Dish.getDishList();</span><br><span class="line">    <span class="comment">// list</span></span><br><span class="line">    List&lt;Dish&gt; collect = dishList.stream().limit(<span class="number">2</span>).collect(Collectors.toList());</span><br><span class="line">    <span class="comment">// set</span></span><br><span class="line">    Set&lt;Dish&gt; collect1 = dishList.stream().limit(<span class="number">2</span>).collect(Collectors.toSet());</span><br><span class="line">    <span class="comment">// map</span></span><br><span class="line">    Map&lt;String, Dish.Type&gt; collect2 = dishList.stream().limit(<span class="number">2</span>).collect(Collectors.toMap(Dish::getName, Dish::getType));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-终止操作"><a href="#2-2-终止操作" class="headerlink" title="2.2 终止操作"></a>2.2 终止操作</h2><ul>
+<li>循环 forEach</li>
+<li>计算 min、max、count、average</li>
+<li>匹配 anyMatch、allMatch、noneMatch、findFirst、findAny</li>
+<li>汇聚 reduce</li>
+<li>收集器 collect</li>
+</ul>
+<h2 id="2-3-查找和匹配"><a href="#2-3-查找和匹配" class="headerlink" title="2.3 查找和匹配"></a>2.3 查找和匹配</h2><p>常见的数据处理套路是看看数据集中的某些元素是否匹配一个给定的属性。Stream API通过allMatch，anyMatch，noneMatch，findFirst和findAny方法提供了这样的工具。<br>查找和匹配都是终端操作。</p>
+<h3 id="2-3-1-anyMatch"><a href="#2-3-1-anyMatch" class="headerlink" title="2.3.1 anyMatch"></a>2.3.1 anyMatch</h3><p>anyMatch方法可以回答“流中是否有一个元素能匹配到给定的谓词”。会返回一个boolean值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnyMatch</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">        <span class="keyword">boolean</span> b = dish.stream().anyMatch(Dish::isVegetarian);</span><br><span class="line">        System.out.println(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-2-allMatch"><a href="#2-3-2-allMatch" class="headerlink" title="2.3.2 allMatch"></a>2.3.2 allMatch</h3><p>allMatch方法和anyMatch类似，校验流中是否都能匹配到给定的谓词。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AllMatch</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">        <span class="comment">//是否所有菜的热量都小于1000</span></span><br><span class="line">        <span class="keyword">boolean</span> b = dish.stream().allMatch(d -&gt; d.getCalories() &lt; <span class="number">1000</span>);</span><br><span class="line">        System.out.println(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-3-noneMatch"><a href="#2-3-3-noneMatch" class="headerlink" title="2.3.3 noneMatch"></a>2.3.3 noneMatch</h3><p>noneMatch方法可以确保流中没有任何元素与给定的谓词匹配。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NoneMatch</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">        <span class="comment">//没有任何菜的热量大于等于1000</span></span><br><span class="line">        <span class="keyword">boolean</span> b = dish.stream().allMatch(d -&gt; d.getCalories() &gt;= <span class="number">1000</span>);</span><br><span class="line">        System.out.println(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>anyMatch</code>，<code>noneMatch</code>，<code>allMatch</code>这三个操作都用到了所谓的短路。</p>
+<h3 id="2-3-4-findAny"><a href="#2-3-4-findAny" class="headerlink" title="2.3.4 findAny"></a>2.3.4 findAny</h3><p>findAny方法将返回当前流中的符合过滤条件的任意元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FindAny</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">        Optional&lt;Dish&gt; any = dish.stream().filter(Dish::isVegetarian).findAny();</span><br><span class="line">        System.out.println(<span class="string">"any = "</span> + any);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-5-findFirst"><a href="#2-3-5-findFirst" class="headerlink" title="2.3.5 findFirst"></a>2.3.5 findFirst</h3><p>findFirst方法能找到你想要的第一个元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FindFirst</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">        Optional&lt;Dish&gt; any = dish.stream().filter(Dish::isVegetarian).findFirst();</span><br><span class="line">        System.out.println(<span class="string">"any = "</span> + any);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-reduce-归约"><a href="#2-4-reduce-归约" class="headerlink" title="2.4 reduce 归约"></a>2.4 reduce 归约</h2><p>此类查询需要将流中所有元素反复结合起来，得到一个值，比如一个 Integer 。这样的查询可以被归类为归约操作（将流归约成一个值）。用函数式编程语言的术语来说，这称为折叠（fold），因为你可以将这个操<br>作看成把一张长长的纸（你的流）反复折叠成一个小方块，而这就是折叠操作的结果。</p>
+<h3 id="2-4-1-元素求和"><a href="#2-4-1-元素求和" class="headerlink" title="2.4.1 元素求和"></a>2.4.1 元素求和</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">8</span>);</span><br><span class="line">    <span class="comment">//求list中的和，以0为基数</span></span><br><span class="line">    Integer reduce = integers.stream().reduce(<span class="number">0</span>, (a, b) -&gt; a + b);</span><br><span class="line">    <span class="comment">//Integer的静态方法</span></span><br><span class="line">    <span class="keyword">int</span> sum = integers.stream().reduce(<span class="number">0</span>, Integer::sum);</span><br><span class="line">    System.out.println(<span class="string">"reduce = "</span> + reduce);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-2-最大值和最小值"><a href="#2-4-2-最大值和最小值" class="headerlink" title="2.4.2 最大值和最小值"></a>2.4.2 最大值和最小值</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; integers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">8</span>);</span><br><span class="line">    Optional&lt;Integer&gt; min = integers.stream().reduce(Integer::min);</span><br><span class="line">    System.out.println(<span class="string">"min = "</span> + min);</span><br><span class="line">    Optional&lt;Integer&gt; max = integers.stream().reduce(Integer::max);</span><br><span class="line">    System.out.println(<span class="string">"max = "</span> + max);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-Collectors-收集器"><a href="#2-5-Collectors-收集器" class="headerlink" title="2.5 Collectors 收集器"></a>2.5 Collectors 收集器</h2><h3 id="2-5-1-查找流中的最大值和最小值-minBy-maxBy"><a href="#2-5-1-查找流中的最大值和最小值-minBy-maxBy" class="headerlink" title="2.5.1 查找流中的最大值和最小值 minBy maxBy"></a>2.5.1 查找流中的最大值和最小值 minBy maxBy</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">    <span class="comment">//创建一个Comparator来进行比较  比较菜的卡路里</span></span><br><span class="line">    Comparator&lt;Dish&gt; dishComparator = Comparator.comparingInt(Dish::getCalories);</span><br><span class="line">    <span class="comment">//maxBy选出最大值</span></span><br><span class="line">    Optional&lt;Dish&gt; collect = dish.stream().collect(Collectors.maxBy(dishComparator));</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">    <span class="comment">//选出最小值</span></span><br><span class="line">    Optional&lt;Dish&gt; collect1 = dish.stream().collect(Collectors.minBy(dishComparator));</span><br><span class="line">    System.out.println(<span class="string">"collect1 = "</span> + collect1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-2-汇总-summingInt"><a href="#2-5-2-汇总-summingInt" class="headerlink" title="2.5.2 汇总 summingInt"></a>2.5.2 汇总 summingInt</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">    <span class="comment">//计算总和</span></span><br><span class="line">    <span class="keyword">int</span> collect = dish.stream().collect(Collectors.summingInt(Dish::getCalories));</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-3-平均数-averagingInt"><a href="#2-5-3-平均数-averagingInt" class="headerlink" title="2.5.3 平均数 averagingInt"></a>2.5.3 平均数 averagingInt</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">    <span class="comment">//计算平均数</span></span><br><span class="line">    Double collect = dish.stream().collect(Collectors.averagingInt(Dish::getCalories));</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-4-连接字符串-joining"><a href="#2-5-4-连接字符串-joining" class="headerlink" title="2.5.4 连接字符串 joining"></a>2.5.4 连接字符串 joining</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">    String collect = dish.stream().map(Dish::getName).collect(Collectors.joining());</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>joining 工厂方法有一个重载版本可以接受元素之间的分界符，这样你就可以得到一个逗号分隔的菜肴名称列表。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String collect = dish.stream().map(Dish::getName).collect(Collectors.joining(<span class="string">", "</span>));</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-5-得到流中的总数-counting"><a href="#2-5-5-得到流中的总数-counting" class="headerlink" title="2.5.5 得到流中的总数 counting"></a>2.5.5 得到流中的总数 counting</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> howManyDishes = dish.stream().collect(Collectors.counting());</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-分组"><a href="#2-6-分组" class="headerlink" title="2.6 分组"></a>2.6 分组</h2><h3 id="2-6-1-分组-groupingBy"><a href="#2-6-1-分组-groupingBy" class="headerlink" title="2.6.1 分组 groupingBy"></a>2.6.1 分组 groupingBy</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">    <span class="comment">//groupingBy接受一个function作为参数</span></span><br><span class="line">    Map&lt;Dish.Type, List&lt;Dish&gt;&gt; collect = dish.stream().collect(Collectors.groupingBy(Dish::getType));</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果想用以分类的条件可能比简单的属性访问器要复杂。例如，你可能想把热量不到400卡路里的菜划分为“低热量”（diet），热量400到700卡路里的菜划为“普通”（normal），高于700卡路里的划为“高热量”（fat）。由于Dish类的作者没有把这个操作写成一个方法，你无法使用方法引用，但你可以把这个逻辑写成Lambda表达式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dishList = Dish.getDish();</span><br><span class="line">    Map&lt;String, List&lt;Dish&gt;&gt; collect = dishList.stream().collect(Collectors.groupingBy(dish-&gt;&#123;</span><br><span class="line">        <span class="keyword">if</span> (dish.getCalories() &lt;= <span class="number">400</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"DIET"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (dish.getCalories() &lt;= <span class="number">700</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"NORMAL"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"FAT"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;));</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-6-2-多级分组"><a href="#2-6-2-多级分组" class="headerlink" title="2.6.2 多级分组"></a>2.6.2 多级分组</h3><p>要实现多级分组，我们可以使用一个由双参数版本的Collectors.groupingBy工厂方法创建的收集器，它除了普通的分类函数之外，还可以接受collector类型的第二个参数。那么要进行二级分组的话，我们可以把一个内层groupingBy传递给外层groupingBy，并定义一个为流中项目分类的二级标准。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Dish&gt; dish = Dish.getDish();</span><br><span class="line">    Map&lt;Dish.Type, Map&lt;String, List&lt;Dish&gt;&gt;&gt; collect = dish.stream().collect(Collectors.groupingBy(Dish::getType, Collectors.groupingBy(d -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (d.getCalories() &lt;= <span class="number">400</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"DIET"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (d.getCalories() &lt;= <span class="number">700</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"NORMAL"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"FAT"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)));</span><br><span class="line">    System.out.println(<span class="string">"collect = "</span> + collect);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-6-3-按子组收集数据"><a href="#2-6-3-按子组收集数据" class="headerlink" title="2.6.3 按子组收集数据"></a>2.6.3 按子组收集数据</h3><p>在上一面，我们看到可以把第二个groupingBy收集器传递给外层收集器来实现多级分组。但进一步说，传递给第一个groupingBy的第二个收集器可以是任何类型，而不一定是另一个groupingBy。</p>
+<p>例如，要数一数菜单中每类菜有多少个，可以传递counting收集器作为groupingBy收集器的第二个参数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Dish.Type, Long&gt; typesCount = dish.stream().collect(groupingBy(Dish::getType, counting()));</span><br></pre></td></tr></table></figure>
+<p>普通的单参数groupingBy(f)（其中<code>f</code>是分类函数）实际上是 groupingBy(f,toList()) 的简便写法。</p>
+<h1 id="3-并行流"><a href="#3-并行流" class="headerlink" title="3 并行流"></a>3 并行流</h1><p>并行流就是一个把内容分成多个数据块，并用不同的线程分别处理每个数据块的流。这样一来，你就可以自动把给定操作的工作负荷分配给多核处理器的所有内核，让它们都忙起来。</p>
+<h2 id="3-1-将顺序流转为并行流"><a href="#3-1-将顺序流转为并行流" class="headerlink" title="3.1 将顺序流转为并行流"></a>3.1 将顺序流转为并行流</h2><p>可以把流转换成并行流，从而让前面的函数归约过程（也就是求和）并行运行——对顺序流调用 parallel 方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">parallelSum</span><span class="params">(<span class="keyword">long</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.iterate(<span class="number">1L</span>, i -&gt; i + <span class="number">1</span>)</span><br><span class="line">            .limit(n)</span><br><span class="line">            .parallel()</span><br><span class="line">            .reduce(<span class="number">0L</span>, Long::sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Stream在内部分成了几块。因此可以对不同的块独立并行进行归纳操作，最后，同一个归纳操作会将各个子流的部分归纳结果合并起来，得到整个原始流的归纳结果。<br><img src="/image/java8Stream.jpg" alt="Stream并行流"><br>类似地，你只需要对并行流调用 sequential 方法就可以把它变成顺序流。</p>
+<p>看看流的parallel方法，你可能会想，并行流用的线程是从哪儿来的？有多少个？怎么自定义这个过程呢？<br>并行流内部使用了默认的ForkJoinPool，它默认的线程数量就是你的处理器数量，这个值是由Runtime.getRuntime().available-Processors()得到的。</p>
+<p>但是你可以通过系统属性java.util.concurrent.ForkJoinPool.common.parallelism来改变线程池大小，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.setProperty(<span class="string">"java.util.concurrent.ForkJoinPool.common.parallelism"</span>,<span class="string">"12"</span>);</span><br></pre></td></tr></table></figure>
+<p>这是一个全局设置，因此它将影响代码中所有的并行流。反过来说，目前还无法专为某个并行流指定这个值。一般而言，让ForkJoinPool的大小等于处理器数量是个不错的默认值，除非你有很好的理由，否则我们强烈建议你不要修改它。</p>
+<h2 id="3-2-分支-合并框架"><a href="#3-2-分支-合并框架" class="headerlink" title="3.2 分支/合并框架"></a>3.2 分支/合并框架</h2><p>分支/合并框架的目的是以递归方式将可以并行的任务拆分成更小的任务，然后将每个子任务的结果合并起来生成整体结果。它是ExecutorService接口的一个实现，它把子任务分配给线程池（称为ForkJoinPool）中的工作线程。</p>
+<h3 id="3-2-1-使用RecursiveTask"><a href="#3-2-1-使用RecursiveTask" class="headerlink" title="3.2.1 使用RecursiveTask"></a>3.2.1 使用RecursiveTask</h3><p>要把任务提交到这个池，必须创建RecursiveTask的一个子类，其中R是并行化任务（以<br>及所有子任务）产生的结果类型，或者如果任务不返回结果，则是RecursiveAction类型（当<br>然它可能会更新其他非局部机构）。<br>要定义RecursiveTask，只需实现它唯一的抽象方法compute ：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> R <span class="title">compute</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这个方法同时定义了将任务拆分成子任务的逻辑，以及无法再拆分或不方便再拆分时，生成单个子任务结果的逻辑。</p>
+<h3 id="3-2-2-使用RecursiveTask求和"><a href="#3-2-2-使用RecursiveTask求和" class="headerlink" title="3.2.2 使用RecursiveTask求和"></a>3.2.2 使用RecursiveTask求和</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForkJoinSumCalculator</span></span></span><br><span class="line"><span class="class">        <span class="keyword">extends</span> <span class="title">java</span>.<span class="title">util</span>.<span class="title">concurrent</span>.<span class="title">RecursiveTask</span>&lt;<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span>[] numbers;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> start;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> end;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> THRESHOLD = <span class="number">10_000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ForkJoinSumCalculator</span><span class="params">(<span class="keyword">long</span>[] numbers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(numbers, <span class="number">0</span>, numbers.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ForkJoinSumCalculator</span><span class="params">(<span class="keyword">long</span>[] numbers, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.numbers = numbers;</span><br><span class="line">        <span class="keyword">this</span>.start = start;</span><br><span class="line">        <span class="keyword">this</span>.end = end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Long <span class="title">compute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> length = end - start;</span><br><span class="line">        <span class="keyword">if</span> (length &lt;= THRESHOLD) &#123;</span><br><span class="line">            <span class="keyword">return</span> computeSequentially();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//创建一个子任务来为数组得前一半求和</span></span><br><span class="line">        ForkJoinSumCalculator leftTask =</span><br><span class="line">                <span class="keyword">new</span> ForkJoinSumCalculator(numbers, start, start + length / <span class="number">2</span>);</span><br><span class="line">        <span class="comment">//利 用 另 一 个ForkJoinPool线程异步执行新创建的子任务</span></span><br><span class="line">        leftTask.fork();</span><br><span class="line">        <span class="comment">//创建一个子任务来为数组得后一半求和</span></span><br><span class="line">        ForkJoinSumCalculator rightTask =</span><br><span class="line">                <span class="keyword">new</span> ForkJoinSumCalculator(numbers, start + length / <span class="number">2</span>, end);</span><br><span class="line">        <span class="comment">//同步执行第二个子任务，有可能进一步递归</span></span><br><span class="line">        Long rightResult = rightTask.compute();</span><br><span class="line">        <span class="comment">//读取第一个任务得结构，未完成就等待</span></span><br><span class="line">        Long leftResult = leftTask.join();</span><br><span class="line">        <span class="keyword">return</span> leftResult + rightResult;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">computeSequentially</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = start; i &lt; end; i++) &#123;</span><br><span class="line">            sum += numbers[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">forkJoinSum</span><span class="params">(<span class="keyword">long</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span>[] numbers = LongStream.rangeClosed(<span class="number">1</span>, n).toArray();</span><br><span class="line">        ForkJoinTask&lt;Long&gt; task = <span class="keyword">new</span> ForkJoinSumCalculator(numbers);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ForkJoinPool().invoke(task);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> l = ForkJoinSumCalculator.forkJoinSum(<span class="number">5</span>);</span><br><span class="line">        System.out.println(<span class="string">"l = "</span> + l);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+        <div class="reward-container">
+  <div>您的支持，是我坚持不懈的动力！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="东邪Jiafly 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="东邪Jiafly 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java8/" rel="tag"># Java8</a>
+              <a href="/tags/stream/" rel="tag"># stream</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/05/15/docker/Docker-%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E9%95%9C%E5%83%8F/" rel="next" title="Docker-安装常用镜像">
+                  <i class="fa fa-chevron-left"></i> Docker-安装常用镜像
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/05/27/jvm/JVM%E7%B3%BB%E5%88%97-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(GC)/" rel="prev" title="JVM系列-垃圾回收(GC)">
+                  JVM系列-垃圾回收(GC) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-前言"><span class="nav-text">1.前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-特性"><span class="nav-text">1.1 特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-运行机制"><span class="nav-text">1.2 运行机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-Stream的创建"><span class="nav-text">1.3 Stream的创建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Stream的常用操作-API"><span class="nav-text">2.Stream的常用操作(API)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-中间操作"><span class="nav-text">2.1 中间操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-filter过滤"><span class="nav-text">2.1.1 filter过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-distinct去重"><span class="nav-text">2.1.2 distinct去重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3-sorted排序"><span class="nav-text">2.1.3 sorted排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4-limit截取"><span class="nav-text">2.1.4 limit截取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-5-skip舍弃"><span class="nav-text">2.1.5 skip舍弃</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-6-map归纳"><span class="nav-text">2.1.6 map归纳</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-7-flatMap扁平化"><span class="nav-text">2.1.7 flatMap扁平化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-8-peek"><span class="nav-text">2.1.8 peek</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-9-collect收集"><span class="nav-text">2.1.9 collect收集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-终止操作"><span class="nav-text">2.2 终止操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-查找和匹配"><span class="nav-text">2.3 查找和匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-anyMatch"><span class="nav-text">2.3.1 anyMatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-allMatch"><span class="nav-text">2.3.2 allMatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-noneMatch"><span class="nav-text">2.3.3 noneMatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-4-findAny"><span class="nav-text">2.3.4 findAny</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-5-findFirst"><span class="nav-text">2.3.5 findFirst</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-reduce-归约"><span class="nav-text">2.4 reduce 归约</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-元素求和"><span class="nav-text">2.4.1 元素求和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-最大值和最小值"><span class="nav-text">2.4.2 最大值和最小值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-Collectors-收集器"><span class="nav-text">2.5 Collectors 收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-1-查找流中的最大值和最小值-minBy-maxBy"><span class="nav-text">2.5.1 查找流中的最大值和最小值 minBy maxBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-2-汇总-summingInt"><span class="nav-text">2.5.2 汇总 summingInt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-3-平均数-averagingInt"><span class="nav-text">2.5.3 平均数 averagingInt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-4-连接字符串-joining"><span class="nav-text">2.5.4 连接字符串 joining</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-5-得到流中的总数-counting"><span class="nav-text">2.5.5 得到流中的总数 counting</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-分组"><span class="nav-text">2.6 分组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-1-分组-groupingBy"><span class="nav-text">2.6.1 分组 groupingBy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-2-多级分组"><span class="nav-text">2.6.2 多级分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-3-按子组收集数据"><span class="nav-text">2.6.3 按子组收集数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-并行流"><span class="nav-text">3 并行流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-将顺序流转为并行流"><span class="nav-text">3.1 将顺序流转为并行流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-分支-合并框架"><span class="nav-text">3.2 分支/合并框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-使用RecursiveTask"><span class="nav-text">3.2.1 使用RecursiveTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-使用RecursiveTask求和"><span class="nav-text">3.2.2 使用RecursiveTask求和</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="东邪Jiafly"
+    src="/images/headImage.jpg">
+  <p class="site-author-name" itemprop="name">东邪Jiafly</p>
+  <div class="site-description" itemprop="description">无法接受一成不变的工作，也无法面对停滞不前的自己！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jiafly" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;jiafly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuyi1181@163.com" title="邮箱 &amp;rarr; mailto:liuyi1181@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/6655694631" title="微博 &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;6655694631" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.tangtu.top/" title="唐突世界 &amp;rarr; https:&#x2F;&#x2F;www.tangtu.top" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i></a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.tangtu.top/" title="http:&#x2F;&#x2F;www.tangtu.top&#x2F;" rel="noopener" target="_blank">唐突世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="copyright"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备17013722号-1 </a>
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">东邪Jiafly</span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("09/19/2018 20:13:14");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已正常运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'd0ee88d96b7bcd08572e',
+      clientSecret: '82d1a1b9d462077a4fcc5242682984e46780aeda',
+      repo: 'jiafly.github.io',
+      owner: 'jiafly',
+      admin: ['jiafly'],
+      id: '2efccc59be9683436f98e8dc00013da6',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

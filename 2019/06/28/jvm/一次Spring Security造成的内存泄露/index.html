@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/headImage.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.前言前段时间项目采用Spring Security作为权限框架应用到现有项目中，一切就那么正常的上线了，然而在上线一段时间后，服务监控就在报警，JVM内存泄露了。如是就是接下来的一段异常处理之旅。">
+<meta name="keywords" content="JVM,内存泄露,实战">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一次Spring Security造成的内存泄露">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;2019&#x2F;06&#x2F;28&#x2F;jvm&#x2F;%E4%B8%80%E6%AC%A1Spring%20Security%E9%80%A0%E6%88%90%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2&#x2F;index.html">
+<meta property="og:site_name" content="东邪Jiafly">
+<meta property="og:description" content="1.前言前段时间项目采用Spring Security作为权限框架应用到现有项目中，一切就那么正常的上线了，然而在上线一段时间后，服务监控就在报警，JVM内存泄露了。如是就是接下来的一段异常处理之旅。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jvm&#x2F;mat-1.jpeg">
+<meta property="og:updated_time" content="2019-09-05T03:26:30.460Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;image&#x2F;jvm&#x2F;mat-1.jpeg">
+
+<link rel="canonical" href="http://www.jiafly.com/2019/06/28/jvm/%E4%B8%80%E6%AC%A1Spring%20Security%E9%80%A0%E6%88%90%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>一次Spring Security造成的内存泄露 | 东邪Jiafly</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">东邪Jiafly</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">巧者劳，智者忧，唯无能者无所求。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fort-awesome"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-folder-open"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-vcard-o"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/06/28/jvm/%E4%B8%80%E6%AC%A1Spring%20Security%E9%80%A0%E6%88%90%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headImage.jpg">
+      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="东邪Jiafly">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一次Spring Security造成的内存泄露
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-28 10:56:00" itemprop="dateCreated datePublished" datetime="2019-06-28T10:56:00+08:00">2019-06-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:30" itemprop="dateModified" datetime="2019-09-05T11:26:30+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h1><p>前段时间项目采用Spring Security作为权限框架应用到现有项目中，一切就那么正常的上线了，然而在上线一段时间后，服务监控就在报警，JVM内存泄露了。如是就是接下来的一段异常处理之旅。</p>
+<a id="more"></a>
+<h1 id="2-内存泄露解决流程"><a href="#2-内存泄露解决流程" class="headerlink" title="2.内存泄露解决流程"></a>2.内存泄露解决流程</h1><h2 id="2-1-生成线上最新的堆dump文件"><a href="#2-1-生成线上最新的堆dump文件" class="headerlink" title="2.1 生成线上最新的堆dump文件"></a>2.1 生成线上最新的堆dump文件</h2><p>使用命令jmap生成线上java程序的dump文件，我们都知道在这个文件中可以查看堆内对象示例的统计信息、查看ClassLoader的信息以及finalizer队列。</p>
+<h2 id="2-2-使用MAT-Memory-Analyzer-Tool-打开生成的dump文件"><a href="#2-2-使用MAT-Memory-Analyzer-Tool-打开生成的dump文件" class="headerlink" title="2.2 使用MAT(Memory Analyzer Tool)打开生成的dump文件"></a>2.2 使用MAT(Memory Analyzer Tool)打开生成的dump文件</h2><p>打开后入图所示:<br><img src="/image/jvm/mat-1.jpeg" alt="MAT"></p>
+<h2 id="2-3-MAT分析"><a href="#2-3-MAT分析" class="headerlink" title="2.3 MAT分析"></a>2.3 MAT分析</h2><p>在Histogram中会列出每个类的实例，可通过分析查出是由于Spring Security造成的问题。</p>
+<h1 id="3-解决"><a href="#3-解决" class="headerlink" title="3.解决"></a>3.解决</h1><p>出现内存溢出的原因是因为Spring Security在用户登录的时候默认创建了session，但是用户在登录的时候又不传session，这就导致每个用户每次进入都会重新创建session，session的有效时间是30分钟，这就导致了内存泄露。最后的解决方案是在Security的配置中增加一句:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)</span><br></pre></td></tr></table></figure>
+<p>就可以了。</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h1><p>这个问题其实是归结于自己对于Spring Security不熟悉的原因导致的，解决只需一行代码，但是在问题的发现过程还是值得自己思考的。以及在解决问题时候遇到的一些问题和自己解决这些问题时候的一些经验都是有利于自己的提升，毕竟是实际遇到的问题，自己的理解方面也会大有不同。</p>
+<blockquote>
+<p>天将降大任于斯人也，必先苦其心志，劳其筋骨，饿其体肤，空乏其身，行拂乱其所为，所以动心忍性，曾益其所不能。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+      
+        <div class="reward-container">
+  <div>您的支持，是我坚持不懈的动力！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="东邪Jiafly 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="东邪Jiafly 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+              <a href="/tags/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2/" rel="tag"># 内存泄露</a>
+              <a href="/tags/%E5%AE%9E%E6%88%98/" rel="tag"># 实战</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/06/27/java/%E4%BD%BF%E7%94%A8Nexus%E6%90%AD%E5%BB%BAMaven%E7%A7%81%E6%9C%8D/" rel="next" title="使用Nexus搭建Maven私服(Nexus Repository Manager 3.X)">
+                  <i class="fa fa-chevron-left"></i> 使用Nexus搭建Maven私服(Nexus Repository Manager 3.X)
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/07/05/docker/Docker-%E6%90%AD%E5%BB%BAes%E5%92%8Ckibana%E7%8E%AF%E5%A2%83/" rel="prev" title="Docker搭建ES和kibana环境">
+                  Docker搭建ES和kibana环境 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-前言"><span class="nav-text">1.前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-内存泄露解决流程"><span class="nav-text">2.内存泄露解决流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-生成线上最新的堆dump文件"><span class="nav-text">2.1 生成线上最新的堆dump文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-使用MAT-Memory-Analyzer-Tool-打开生成的dump文件"><span class="nav-text">2.2 使用MAT(Memory Analyzer Tool)打开生成的dump文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-MAT分析"><span class="nav-text">2.3 MAT分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-解决"><span class="nav-text">3.解决</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结"><span class="nav-text">4.总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="东邪Jiafly"
+    src="/images/headImage.jpg">
+  <p class="site-author-name" itemprop="name">东邪Jiafly</p>
+  <div class="site-description" itemprop="description">无法接受一成不变的工作，也无法面对停滞不前的自己！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jiafly" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;jiafly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuyi1181@163.com" title="邮箱 &amp;rarr; mailto:liuyi1181@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/6655694631" title="微博 &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;6655694631" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.tangtu.top/" title="唐突世界 &amp;rarr; https:&#x2F;&#x2F;www.tangtu.top" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i></a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.tangtu.top/" title="http:&#x2F;&#x2F;www.tangtu.top&#x2F;" rel="noopener" target="_blank">唐突世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="copyright"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备17013722号-1 </a>
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">东邪Jiafly</span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("09/19/2018 20:13:14");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已正常运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'd0ee88d96b7bcd08572e',
+      clientSecret: '82d1a1b9d462077a4fcc5242682984e46780aeda',
+      repo: 'jiafly.github.io',
+      owner: 'jiafly',
+      admin: ['jiafly'],
+      id: '3746a9631fe486f600031c6981d6f08c',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

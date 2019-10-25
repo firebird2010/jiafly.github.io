@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/headImage.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/headImage.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1. 前言我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。但是如果我们在电脑上安装了docker那就不一样了，或者我们购买了云主机，我们可以在主机上自己安装mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。个人比较推荐使用docker，因为真的是太好用">
+<meta name="keywords" content="docker,mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker-创建mysql容器">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;2019&#x2F;03&#x2F;10&#x2F;docker&#x2F;Docker-%E5%88%9B%E5%BB%BAmysql%E5%AE%B9%E5%99%A8&#x2F;index.html">
+<meta property="og:site_name" content="东邪Jiafly">
+<meta property="og:description" content="1. 前言我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。但是如果我们在电脑上安装了docker那就不一样了，或者我们购买了云主机，我们可以在主机上自己安装mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。个人比较推荐使用docker，因为真的是太好用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-05T03:26:19.478Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.jiafly.com/2019/03/10/docker/Docker-%E5%88%9B%E5%BB%BAmysql%E5%AE%B9%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Docker-创建mysql容器 | 东邪Jiafly</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">东邪Jiafly</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">巧者劳，智者忧，唯无能者无所求。</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fort-awesome"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-folder-open"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-vcard-o"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/03/10/docker/Docker-%E5%88%9B%E5%BB%BAmysql%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/headImage.jpg">
+      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="东邪Jiafly">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker-创建mysql容器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-10 17:45:22" itemprop="dateCreated datePublished" datetime="2019-03-10T17:45:22+08:00">2019-03-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:19" itemprop="dateModified" datetime="2019-09-05T11:26:19+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h1><p>我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。但是如果我们在电脑上安装了docker那就不一样了，或者我们购买了云主机，我们可以在主机上自己安装mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。<br>个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以安装很多实用的工具，你可以到dockerHub上去查找你需要的镜像。</p>
+<a id="more"></a>
+<h1 id="2-准备工作"><a href="#2-准备工作" class="headerlink" title="2. 准备工作"></a>2. 准备工作</h1><h2 id="2-1-安装Docker"><a href="#2-1-安装Docker" class="headerlink" title="2.1 安装Docker"></a>2.1 安装Docker</h2><p>无论你是Windows还是Mac还是Linux，现在网上都有很多安装教程，你可以根据步骤进行安装，这里我们就当Docker已经安装完啦。</p>
+<h2 id="2-2-拉取mysql的镜像-这里使用mysql5-7"><a href="#2-2-拉取mysql的镜像-这里使用mysql5-7" class="headerlink" title="2.2 拉取mysql的镜像(这里使用mysql5.7)"></a>2.2 拉取mysql的镜像(这里使用mysql5.7)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker pull mysql:5.7</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-启动mysql"><a href="#2-3-启动mysql" class="headerlink" title="2.3 启动mysql"></a>2.3 启动mysql</h2><p>当我们从镜像仓库拉完mysql以后，本地或者服务器上就已经有了mysql的镜像，我们可以通过命令去查看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker images</span><br></pre></td></tr></table></figure>
+<p>这个命令就列出了当前主机上已经下载的所有镜像。</p>
+<h2 id="2-4-在宿主机上创建数据存储文件夹"><a href="#2-4-在宿主机上创建数据存储文件夹" class="headerlink" title="2.4 在宿主机上创建数据存储文件夹"></a>2.4 在宿主机上创建数据存储文件夹</h2><p>个人比较推荐使用docker安装镜像之后对于数据要有规律的去保存，这样也方便以后删除镜像的时候能够轻易的找到数据一起删除。所有在这里我所有使用docker安装的镜像都会在/data/docker目录下，docker目录中暗中镜像再进行分类。<br>例如：这里我要使用docker启动一个mysql的容器 容器名称为mysql001，这样我就创建如下目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir /data/docker/mysql/mysql001</span><br></pre></td></tr></table></figure>
+<h3 id="2-5-创建容器"><a href="#2-5-创建容器" class="headerlink" title="2.5 创建容器"></a>2.5 创建容器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run --name mysql001 -p 3306:3306  -e MYSQL_ROOT_PASSWORD=root -v /etc/localtime:/etc/localtime  -v /data/docker/mysql/mysql001:/var/lib/mysql -d mysql:5.7</span><br></pre></td></tr></table></figure>
+
+<p>这里我们对上面的命令进行拆解，清楚的了解每一步都是在做什么操作。</p>
+<ul>
+<li>docker run<br>这是启动一个容器</li>
+<li>–name mysql001<br>启动的容器名称为mysql001，这个名称在后面操作可直接使用名称</li>
+<li>-p 3306:3306<br>映射端口，前面一个端口是宿主机的端口，后面一个端口是mysql的端口，我们访问数据库是通过访问宿主机去访问，所以使用的是前面一个端口</li>
+<li>-e MYSQL_ROOT_PASSWORD=root<br>设置mysql的登录密码为root</li>
+<li>-v /etc/localtime:/etc/localtime<br>这个是这是启动容器的时区和宿主机一致，这个设置比较有用，不然会出现数据库中的时间比当前时间晚8小时</li>
+<li>-v /data/docker/mysql/mysql001:/var/lib/mysql<br>这个就是用刚刚创建的目录去存储mysql的数据了，我们在mysql中的所有数据都会存储在宿主器前面的目录里</li>
+<li>-d mysql:5.7</li>
+<li>d是开启Daemon模式即保护进程的方式运行。最后的这个是知道启动容器的版本 如果没有的话默认就是latest 和前面pull镜像时一样</li>
+</ul>
+<h3 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h3><p>执行完上面的命令后容器并没有启动，我们可以通过执行以下命令去启动容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker start mysql001</span><br></pre></td></tr></table></figure>
+<p>或者将name修改为image_id，image_id可以通过 docker images命令去查看。</p>
+<h2 id="访问mysql数据库"><a href="#访问mysql数据库" class="headerlink" title="访问mysql数据库"></a>访问mysql数据库</h2><ul>
+<li>方式一<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mysql-cli -h 127.0.0.1 -u root -p root</span><br></pre></td></tr></table></figure></li>
+<li>方式二<br>使用mysql客户端如：mysqlworkbatch，navicat等客户端软件。</li>
+</ul>
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>删除容器必须要保证容器是stop的可以通过下面的命令查看</p>
+<ul>
+<li>查看正在运行的容器<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps</span><br></pre></td></tr></table></figure></li>
+<li>查看所有运行过的容器包括正在运行的容器<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker ps -a</span><br></pre></td></tr></table></figure>
+根据上面的命令可以查找到容器id，执行命令删除容器<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker rm 容器id</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+        <div class="reward-container">
+  <div>您的支持，是我坚持不懈的动力！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="东邪Jiafly 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="东邪Jiafly 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2018/11/27/RabbitMQ/" rel="next" title="RabbitMQ实战">
+                  <i class="fa fa-chevron-left"></i> RabbitMQ实战
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2019/05/15/docker/Docker-%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E9%95%9C%E5%83%8F/" rel="prev" title="Docker-安装常用镜像">
+                  Docker-安装常用镜像 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-前言"><span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-准备工作"><span class="nav-text">2. 准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-安装Docker"><span class="nav-text">2.1 安装Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-拉取mysql的镜像-这里使用mysql5-7"><span class="nav-text">2.2 拉取mysql的镜像(这里使用mysql5.7)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-启动mysql"><span class="nav-text">2.3 启动mysql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-在宿主机上创建数据存储文件夹"><span class="nav-text">2.4 在宿主机上创建数据存储文件夹</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-创建容器"><span class="nav-text">2.5 创建容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动容器"><span class="nav-text">启动容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问mysql数据库"><span class="nav-text">访问mysql数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除容器"><span class="nav-text">删除容器</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="东邪Jiafly"
+    src="/images/headImage.jpg">
+  <p class="site-author-name" itemprop="name">东邪Jiafly</p>
+  <div class="site-description" itemprop="description">无法接受一成不变的工作，也无法面对停滞不前的自己！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jiafly" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;jiafly" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:liuyi1181@163.com" title="邮箱 &amp;rarr; mailto:liuyi1181@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/6655694631" title="微博 &amp;rarr; https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;6655694631" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.tangtu.top/" title="唐突世界 &amp;rarr; https:&#x2F;&#x2F;www.tangtu.top" rel="noopener" target="_blank"><i class="fa fa-fw fa-book"></i></a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.tangtu.top/" title="http:&#x2F;&#x2F;www.tangtu.top&#x2F;" rel="noopener" target="_blank">唐突世界</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="copyright"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备17013722号-1 </a>
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">东邪Jiafly</span>
+</div>
+
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("09/19/2018 20:13:14");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已正常运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'd0ee88d96b7bcd08572e',
+      clientSecret: '82d1a1b9d462077a4fcc5242682984e46780aeda',
+      repo: 'jiafly.github.io',
+      owner: 'jiafly',
+      admin: ['jiafly'],
+      id: '1bddcb23d64409ff00afa3b148ce17c7',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
