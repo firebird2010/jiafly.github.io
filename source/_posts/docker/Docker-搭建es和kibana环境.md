@@ -6,7 +6,7 @@ tags:
     - docker
 categories:
     - docker
-notshow: true
+top: 7
 ---
 # 1.前言
 现在elasticsearch是比较火的，很多公司都在用，所以如果说还不知道es可能就会被人鄙视了。所以这里我就下决心来学习es，我比较钟爱于docker所有也就使用了docker来安装es，这里会详细介绍下安装的细节以及需要注意的地方。这里我使用的电脑是MacBook Pro 如果是linux的话其实基本相同，如果是Windows的话，可能就不太一样了，这里我也没有实际操作过，感兴趣的也可以自己去尝试一下。
