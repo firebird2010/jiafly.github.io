@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 4.0.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/headImage.jpg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/headImage.jpg">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/headImage.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/logox32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logox32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logox32.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
@@ -53,9 +53,9 @@
   <meta name="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
 <meta name="keywords" content="Jiafly">
 <meta property="og:type" content="website">
-<meta property="og:title" content="东邪Jiafly">
+<meta property="og:title" content="桃花源">
 <meta property="og:url" content="http:&#x2F;&#x2F;www.jiafly.com&#x2F;page&#x2F;2&#x2F;index.html">
-<meta property="og:site_name" content="东邪Jiafly">
+<meta property="og:site_name" content="桃花源">
 <meta property="og:description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -74,7 +74,7 @@
   };
 </script>
 
-  <title>东邪Jiafly</title>
+  <title>桃花源</title>
   
 
 
@@ -120,7 +120,7 @@
     <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">东邪Jiafly</span>
+        <span class="site-title">桃花源</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -212,16 +212,266 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/16/java/Java8-Stream%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/29/java/%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/headImage.jpg">
-      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="image" content="/images/logox32.png">
+      <meta itemprop="name" content="东邪">
       <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="name" content="桃花源">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/29/java/%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84/" class="post-title-link" itemprop="url">使用Orika实现Java Bean映射</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-29 12:00:00" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00+08:00">2019-05-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:24" itemprop="dateModified" datetime="2019-09-05T11:26:24+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index">
+                    <span itemprop="name">java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Orika是Java Bean映射框架，可以实现从一个对象递归拷贝数据至另一个对象。这样我们可以将数据在实体，DTO，VO之间切换。关于Bean映射，其实BeanUtil中的copyProperties()方法也可以实现，但是如果名字相同类型不同的的是不能直接复制的，而orika却可以解决这个问题。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/29/java/%E4%BD%BF%E7%94%A8Orika%E5%AE%9E%E7%8E%B0Java%20Bean%E6%98%A0%E5%B0%84/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/28/jvm/JVM-%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logox32.png">
+      <meta itemprop="name" content="东邪">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="桃花源">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/28/jvm/JVM-%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">JVM-内存结构</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-28 00:13:00" itemprop="dateCreated datePublished" datetime="2019-05-28T00:13:00+08:00">2019-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:34" itemprop="dateModified" datetime="2019-09-05T11:26:34+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h1><p>对于 Java 程序员来说，在虚拟机自动内存管理机制下，不再需要像 C/C++程序开发程序员这样为每一个 new 操作去写对应的 delete/free 操作，不容易出现内存泄漏和内存溢出问题。正是因为 Java 程序员把内存控制权利交给 Java 虚拟机，一旦出现内存泄漏和溢出方面的问题，如果不了解虚拟机是怎样使用内存的，那么排查错误将会是一个非常艰巨的任务。</p>
+<h1 id="2-运行时数据区域"><a href="#2-运行时数据区域" class="headerlink" title="2.运行时数据区域"></a>2.运行时数据区域</h1><p>Java 虚拟机在执行 Java 程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK 1.8 和之前的版本略有不同，下面会介绍到。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/28/jvm/JVM-%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/27/jvm/JVM%E7%B3%BB%E5%88%97-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(GC)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logox32.png">
+      <meta itemprop="name" content="东邪">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="桃花源">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/05/27/jvm/JVM%E7%B3%BB%E5%88%97-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(GC)/" class="post-title-link" itemprop="url">JVM系列-垃圾回收(GC)</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-27 12:00:00" itemprop="dateCreated datePublished" datetime="2019-05-27T12:00:00+08:00">2019-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-05 11:26:32" itemprop="dateModified" datetime="2019-09-05T11:26:32+08:00">2019-09-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-GC概述"><a href="#1-GC概述" class="headerlink" title="1.GC概述"></a>1.GC概述</h1><p>一说到GC我们就很容易的联想到了Java，并把它当做是Java的附属。其实不然，GC的历史早在1960年的Lisp语言上就被使用，所以它的产生比Java还早，只能说Java借鉴了这种技术，并且有更多的实现算法。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/27/jvm/JVM%E7%B3%BB%E5%88%97-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6(GC)/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/16/java/Java8-Stream%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logox32.png">
+      <meta itemprop="name" content="东邪">
+      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="桃花源">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -296,182 +546,16 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/05/15/docker/Docker-%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E9%95%9C%E5%83%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/headImage.jpg">
-      <meta itemprop="name" content="东邪Jiafly">
-      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="东邪Jiafly">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/05/15/docker/Docker-%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E9%95%9C%E5%83%8F/" class="post-title-link" itemprop="url">Docker-安装常用镜像</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-05-15 20:31:00" itemprop="dateCreated datePublished" datetime="2019-05-15T20:31:00+08:00">2019-05-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-09-05 11:26:17" itemprop="dateModified" datetime="2019-09-05T11:26:17+08:00">2019-09-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h1><p>我们在平时的开发中可能会用到mysql，redis 还有mongodb等用于存储数据，但是有时候我们使用测试环境可能不太方便(例如:在家不能连接公司数据库)，这时候我们可以在本地或者自己的云服务器上就有了发挥的作用了，但是如果我们在本地安装这些的话就很占我们电脑的内存了，这时候docker就登场了。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/05/15/docker/Docker-%E5%AE%89%E8%A3%85%E5%B8%B8%E7%94%A8%E9%95%9C%E5%83%8F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2019/03/10/docker/Docker-%E5%88%9B%E5%BB%BAmysql%E5%AE%B9%E5%99%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/headImage.jpg">
-      <meta itemprop="name" content="东邪Jiafly">
-      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="东邪Jiafly">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/10/docker/Docker-%E5%88%9B%E5%BB%BAmysql%E5%AE%B9%E5%99%A8/" class="post-title-link" itemprop="url">Docker-创建mysql容器</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-10 17:45:22" itemprop="dateCreated datePublished" datetime="2019-03-10T17:45:22+08:00">2019-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-09-05 11:26:19" itemprop="dateModified" datetime="2019-09-05T11:26:19+08:00">2019-09-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h1><p>我们在工作中会有需要在本机安装mysql，但是独立去安装mysql会耗费很大的内存以及磁盘空间，如果是在自己的电脑上时间久了可能会使电脑越来越卡。但是如果我们在电脑上安装了docker那就不一样了，或者我们购买了云主机，我们可以在主机上自己安装mysql，但是普通的按住步骤太繁琐，而且一般只能启用一个mysql，这时候Docker就站出来啦。<br>个人比较推荐使用docker，因为真的是太好用了，好用到爱不释手。嘻嘻~。我们不仅可以使用docker还可以安装很多实用的工具，你可以到dockerHub上去查找你需要的镜像。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/10/docker/Docker-%E5%88%9B%E5%BB%BAmysql%E5%AE%B9%E5%99%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2018/11/27/RabbitMQ/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/headImage.jpg">
-      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="image" content="/images/logox32.png">
+      <meta itemprop="name" content="东邪">
       <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="东邪Jiafly">
+      <meta itemprop="name" content="桃花源">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -547,89 +631,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.jiafly.com/2018/09/19/docker/Docker-%E4%BB%8B%E7%BB%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/headImage.jpg">
-      <meta itemprop="name" content="东邪Jiafly">
-      <meta itemprop="description" content="无法接受一成不变的工作，也无法面对停滞不前的自己！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="东邪Jiafly">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/09/19/docker/Docker-%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">Docker-介绍</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-09-19 20:13:14" itemprop="dateCreated datePublished" datetime="2018-09-19T20:13:14+08:00">2018-09-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-09-05 11:26:20" itemprop="dateModified" datetime="2019-09-05T11:26:20+08:00">2019-09-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1.前言"></a>1.前言</h1><h2 id="1-1-什么是Docker？"><a href="#1-1-什么是Docker？" class="headerlink" title="1.1 什么是Docker？"></a>1.1 什么是Docker？</h2><p>Docker使用Google公司推出的Go语言进行开发实现，基于Linux内核的cgroup，namespace，以及 AUFS类的UnionFS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为<strong>容器</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/09/19/docker/Docker-%E4%BB%8B%E7%BB%8D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -670,9 +671,9 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <img class="site-author-image" itemprop="image" alt="东邪Jiafly"
-    src="/images/headImage.jpg">
-  <p class="site-author-name" itemprop="name">东邪Jiafly</p>
+  <img class="site-author-image" itemprop="image" alt="东邪"
+    src="/images/logox32.png">
+  <p class="site-author-name" itemprop="name">东邪</p>
   <div class="site-description" itemprop="description">无法接受一成不变的工作，也无法面对停滞不前的自己！</div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -749,7 +750,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">东邪Jiafly</span>
+  <span class="author" itemprop="copyrightHolder">东邪</span>
 </div>
 
 <!-- 网站运行时间的设置 -->
